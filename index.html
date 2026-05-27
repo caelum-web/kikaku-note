@@ -2,356 +2,460 @@
 <html lang="ja" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>企画ノート — YouTuber企画管理</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="企画ノート">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="description" content="YouTuberのための動画企画管理アプリ。">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg: #ffffff;
-  --surface: #f7f7f5;
-  --surface2: #efefec;
-  --border: #e0ddd8;
-  --border-strong: #b0ada8;
-  --text: #111110;
-  --text-muted: #6b6864;
-  --text-faint: #a8a5a0;
-  --done-bg: #f2f2f0;
-  --done-text: #b0ada8;
-  --danger: #c0392b;
-  --danger-bg: #fff0ef;
-  --shadow: 0 1px 4px rgba(0,0,0,0.07);
-  --radius: 8px;
-  --radius-lg: 12px;
-  --transition: 0.18s ease;
-}
-[data-theme="dark"] {
-  --bg: #141413;
-  --surface: #1e1e1c;
-  --surface2: #272725;
-  --border: #2e2e2b;
-  --border-strong: #4a4a46;
-  --text: #f0ede8;
-  --text-muted: #8a8780;
-  --text-faint: #5a5854;
-  --done-bg: #1a1a18;
-  --done-text: #5a5854;
-  --danger: #e05a4e;
-  --danger-bg: #2a1a19;
-  --shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
 
-body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  transition: background var(--transition), color var(--transition);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--surface:#f7f7f5;--surface2:#efefec;
+  --border:#e0ddd8;--border-strong:#b0ada8;
+  --text:#111110;--text-muted:#6b6864;--text-faint:#a8a5a0;
+  --done-bg:#f2f2f0;--done-text:#b0ada8;
+  --danger:#c0392b;--danger-bg:#fff0ef;
+  --accent-blue:#1a5cff;--accent-green:#1a8a4a;
+  --shadow:0 1px 4px rgba(0,0,0,0.07);
+  --radius:8px;--radius-lg:12px;--tr:0.18s ease;
 }
+[data-theme="dark"]{
+  --bg:#141413;--surface:#1e1e1c;--surface2:#272725;
+  --border:#2e2e2b;--border-strong:#4a4a46;
+  --text:#f0ede8;--text-muted:#8a8780;--text-faint:#5a5854;
+  --done-bg:#1a1a18;--done-text:#5a5854;
+  --danger:#e05a4e;--danger-bg:#2a1a19;
+  --shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background var(--tr),color var(--tr)}
 
 /* ===== HEADER ===== */
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  transition: background var(--transition), border-color var(--transition);
-}
-.header-inner {
-  max-width: 900px; margin: 0 auto; height: 60px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.logo {
-  font-family: 'Space Mono', monospace;
-  font-size: 15px; font-weight: 700; letter-spacing: -0.5px;
-  color: var(--text); text-decoration: none; white-space: nowrap;
-  cursor: pointer;
-}
-.logo-badge {
-  display: inline-block;
-  background: var(--text); color: var(--bg);
-  padding: 2px 7px; border-radius: 4px; margin-right: 6px; font-size: 11px;
-  transition: background var(--transition), color var(--transition);
-}
-.header-right { display: flex; align-items: center; gap: 14px; }
-.header-stats { display: flex; gap: 14px; align-items: center; }
-.stat { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
-.stat strong { font-weight: 700; color: var(--text); font-family: 'Space Mono', monospace; }
-.icon-btn {
-  width: 32px; height: 32px; border-radius: var(--radius);
-  border: 1px solid var(--border); background: transparent; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-muted); transition: all 0.12s;
-}
-.icon-btn:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface); }
-.icon-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-.icon-btn svg { width: 16px; height: 16px; }
+header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 24px;padding-top:env(safe-area-inset-top);transition:background var(--tr),border-color var(--tr)}
+.header-inner{max-width:960px;margin:0 auto;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;letter-spacing:-.5px;color:var(--text);cursor:pointer;white-space:nowrap}
+.logo-badge{display:inline-block;background:var(--text);color:var(--bg);padding:2px 7px;border-radius:4px;margin-right:6px;font-size:11px;transition:background var(--tr),color var(--tr)}
+.header-stats{display:flex;gap:14px;align-items:center}
+.stat{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.stat strong{font-weight:700;color:var(--text);font-family:'Space Mono',monospace}
 
-/* ===== NAV TABS ===== */
-.nav-tabs {
-  display: flex; gap: 0;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  padding: 0 24px;
-  transition: background var(--transition), border-color var(--transition);
-}
-.nav-tab {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px; font-weight: 500;
-  padding: 10px 18px; cursor: pointer;
-  border: none; background: transparent;
-  color: var(--text-muted);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px; transition: all 0.12s;
-}
-.nav-tab:hover { color: var(--text); }
-.nav-tab.active { color: var(--text); border-bottom-color: var(--text); }
+/* ===== NAV ===== */
+.nav-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);padding:0 24px;padding-left:calc(24px + env(safe-area-inset-left));padding-right:calc(24px + env(safe-area-inset-right));transition:background var(--tr),border-color var(--tr)}
+.nav-tab{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:500;padding:10px 16px;cursor:pointer;border:none;background:transparent;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.12s;white-space:nowrap}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--text)}
 
 /* ===== MAIN ===== */
-main { max-width: 900px; margin: 0 auto; padding: 28px 24px 80px; }
-.page { display: none; }
-.page.active { display: block; }
+main{max-width:960px;margin:0 auto;padding:28px 24px 80px;padding-left:calc(24px + env(safe-area-inset-left));padding-right:calc(24px + env(safe-area-inset-right));padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+.page{display:none}
+.page.active{display:block}
 
-/* ===== FORM ELEMENTS ===== */
-input[type="text"], textarea, select {
-  width: 100%; font-family: 'Noto Sans JP', sans-serif;
-  font-size: 14px; color: var(--text);
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 10px 13px; outline: none;
-  transition: border-color 0.15s, background var(--transition), color var(--transition);
-  appearance: none; -webkit-appearance: none;
-}
-input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--text); }
-input[type="text"]::placeholder, textarea::placeholder { color: var(--text-faint); }
-textarea { resize: vertical; min-height: 72px; line-height: 1.6; }
-select {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238a8780' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px;
-}
-
-.btn {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px; font-weight: 700;
-  padding: 9px 18px; border-radius: var(--radius);
-  border: 1px solid transparent; cursor: pointer;
-  transition: all 0.12s; white-space: nowrap;
-}
-.btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-.btn-primary:hover { opacity: 0.85; }
-.btn-primary:active { transform: scale(0.98); }
-.btn-ghost { background: transparent; color: var(--text-muted); border-color: var(--border); }
-.btn-ghost:hover { border-color: var(--border-strong); color: var(--text); }
-.btn-ghost:active { transform: scale(0.98); }
-.btn-danger-outline { background: transparent; color: var(--danger); border-color: var(--danger); }
-.btn-danger-outline:hover { background: var(--danger-bg); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
+/* ===== FORMS ===== */
+input[type="text"],input[type="date"],textarea,select{width:100%;font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;outline:none;transition:border-color 0.15s,background var(--tr),color var(--tr);appearance:none;-webkit-appearance:none}
+input[type="text"]:focus,input[type="date"]:focus,textarea:focus,select:focus{border-color:var(--text)}
+input[type="text"]::placeholder,textarea::placeholder{color:var(--text-faint)}
+input[type="date"]{cursor:pointer;color-scheme:light dark}
+textarea{resize:vertical;min-height:68px;line-height:1.6}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238a8780' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.btn{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;padding:9px 18px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer;transition:all 0.12s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-primary:hover{opacity:.85}
+.btn-primary:active{transform:scale(.98)}
+.btn-ghost{background:transparent;color:var(--text-muted);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--border-strong);color:var(--text)}
+.btn-ghost:active{transform:scale(.98)}
+.btn-danger-outline{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn-danger-outline:hover{background:var(--danger-bg)}
+.btn-export{background:transparent;color:var(--text-muted);border-color:var(--border);font-size:12px;padding:7px 14px}
+.btn-export:hover{border-color:var(--border-strong);color:var(--text)}
+.btn-sm{padding:6px 12px;font-size:12px}
 
 /* ===== ADD FORM ===== */
-.add-section { margin-bottom: 36px; }
-.add-form {
-  background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 20px; display: flex; flex-direction: column; gap: 12px;
-  transition: background var(--transition), border-color var(--transition);
-}
-.section-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
-  text-transform: uppercase; color: var(--text-faint);
-}
-.sub-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.sub-row select { flex: 0 0 auto; width: auto; min-width: 130px; }
+.add-section{margin-bottom:32px}
+.add-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;flex-direction:column;gap:12px;transition:background var(--tr),border-color var(--tr)}
+.section-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-faint)}
+.sub-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sub-row select{flex:0 0 auto;width:auto;min-width:130px}
+.date-field-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:180px}
+.date-field-label{font-size:12px;color:var(--text-muted);white-space:nowrap;flex-shrink:0}
+.date-field-wrap input[type="date"]{flex:1;font-size:13px;padding:9px 12px}
+.date-clear-btn{width:26px;height:26px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-faint);flex-shrink:0;transition:all 0.12s}
+.date-clear-btn:hover{background:var(--surface2);color:var(--text)}
+.date-clear-btn svg{width:13px;height:13px}
 
 /* ===== LIST HEADER ===== */
-.list-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
-}
-.list-header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.list-title { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; }
-.filter-bar { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-btn {
-  font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 500;
-  padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border);
-  background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.12s;
-}
-.filter-btn:hover { border-color: var(--border-strong); color: var(--text); }
-.filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-.bulk-delete-btn {
-  font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 500;
-  padding: 5px 13px; border-radius: var(--radius);
-  border: 1px solid var(--border); background: transparent;
-  color: var(--text-muted); cursor: pointer; transition: all 0.12s;
-  display: flex; align-items: center; gap: 5px;
-}
-.bulk-delete-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
-.bulk-delete-btn svg { width: 13px; height: 13px; }
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.list-header-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.list-title{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.12s}
+.filter-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.bulk-delete-btn{font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;padding:5px 13px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:5px}
+.bulk-delete-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+.bulk-delete-btn svg{width:13px;height:13px}
 
 /* ===== CARDS ===== */
-.card-list { display: flex; flex-direction: column; gap: 8px; }
-.card {
-  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
-  transition: border-color 0.15s, box-shadow 0.15s, background var(--transition);
-}
-.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); }
-.card.done { background: var(--done-bg); }
-.card.done .card-title { text-decoration: line-through; color: var(--done-text); }
-.card.done .card-memo { color: var(--text-faint); }
-
-.check-btn {
-  flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
-  border: 2px solid var(--border-strong); background: transparent; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; margin-top: 3px;
-  transition: all 0.15s;
-}
-.check-btn:hover { border-color: var(--text); background: var(--surface2); }
-.check-btn.checked { background: var(--text); border-color: var(--text); }
-.check-btn svg { display: none; width: 10px; height: 10px; }
-.check-btn.checked svg { display: block; }
-
-.card-body { flex: 1; min-width: 0; }
-.card-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; flex-wrap: wrap; }
-.tag {
-  display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: 0.6px; padding: 2px 7px; border-radius: 4px;
-  background: var(--text); color: var(--bg); white-space: nowrap;
-}
-.card-date { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-faint); }
-.card-title { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 3px; word-break: break-all; }
-.card-memo { font-size: 12px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; word-break: break-all; }
-.card-actions { display: flex; gap: 2px; flex-shrink: 0; margin-top: 1px; }
-.card-icon-btn {
-  width: 28px; height: 28px; border-radius: 6px; border: none;
-  background: transparent; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-faint); transition: all 0.12s;
-}
-.card-icon-btn:hover { background: var(--surface2); color: var(--text); }
-.card-icon-btn.delete:hover { background: var(--danger-bg); color: var(--danger); }
-.card-icon-btn svg { width: 14px; height: 14px; }
-
-.edit-form { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-.edit-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.card-list{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;transition:border-color 0.15s,box-shadow 0.15s,background var(--tr)}
+.card:hover{border-color:var(--border-strong);box-shadow:var(--shadow)}
+.card.done{background:var(--done-bg)}
+.card.done .card-title{text-decoration:line-through;color:var(--done-text)}
+.card.done .card-memo,.card.done .card-schedule{color:var(--text-faint)}
+.check-btn{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:2px solid var(--border-strong);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:3px;transition:all 0.15s}
+.check-btn:hover{border-color:var(--text);background:var(--surface2)}
+.check-btn.checked{background:var(--text);border-color:var(--text)}
+.check-btn svg{display:none;width:10px;height:10px}
+.check-btn.checked svg{display:block}
+.card-body{flex:1;min-width:0}
+.card-meta{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;padding:2px 7px;border-radius:4px;background:var(--text);color:var(--bg);white-space:nowrap}
+.card-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-faint)}
+.card-title{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:3px;word-break:break-all}
+.card-memo{font-size:12px;color:var(--text-muted);line-height:1.6;white-space:pre-wrap;word-break:break-all;margin-bottom:3px}
+.card-schedule{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--text-muted);margin-top:4px;padding:3px 8px;border-radius:5px;background:var(--surface2)}
+.card-schedule svg{width:11px;height:11px;flex-shrink:0}
+.card-schedule.overdue{color:var(--danger);background:var(--danger-bg)}
+.card-schedule.today{color:var(--accent-green);background:#edf7f0}
+[data-theme="dark"] .card-schedule.today{background:#0d2a18}
+.card-actions{display:flex;gap:2px;flex-shrink:0;margin-top:1px}
+.card-icon-btn{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-faint);transition:all 0.12s}
+.card-icon-btn:hover{background:var(--surface2);color:var(--text)}
+.card-icon-btn.delete:hover{background:var(--danger-bg);color:var(--danger)}
+.card-icon-btn svg{width:14px;height:14px}
+.edit-form{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 
 /* ===== EMPTY ===== */
-.empty { text-align: center; padding: 56px 0; color: var(--text-faint); }
-.empty-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.5; }
-.empty p { font-size: 13px; line-height: 1.8; }
+.empty{text-align:center;padding:56px 0;color:var(--text-faint)}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.5}
+.empty p{font-size:13px;line-height:1.8}
+
+/* ===== CALENDAR PAGE ===== */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
+.cal-nav-btn{width:34px;height:34px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all 0.12s;flex-shrink:0}
+.cal-nav-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.cal-nav-btn svg{width:16px;height:16px}
+.cal-month-label{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;text-align:center;flex:1}
+.cal-today-btn{font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.12s}
+.cal-today-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.cal-grid-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}
+.cal-dow{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;text-align:center;padding:8px 4px;color:var(--text-faint)}
+.cal-dow:first-child{color:#c0392b}
+.cal-dow:last-child{color:var(--accent-blue)}
+.cal-body{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-cell{min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px 5px;cursor:default;transition:background 0.1s;position:relative}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell.other-month .cal-day-num{opacity:.3}
+.cal-cell.today-cell{background:var(--surface2)}
+.cal-cell.today-cell .cal-day-num{background:var(--text);color:var(--bg);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.cal-cell.has-idea{cursor:pointer}
+.cal-cell.has-idea:hover{background:var(--surface2)}
+.cal-day-num{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;line-height:1}
+.cal-cell.sun .cal-day-num{color:#c0392b}
+.cal-cell.sat .cal-day-num{color:var(--accent-blue)}
+.cal-cell.today-cell .cal-day-num{color:var(--bg) !important}
+.cal-dot-list{display:flex;flex-direction:column;gap:2px}
+.cal-dot{font-size:10px;line-height:1.3;font-weight:500;padding:1px 4px;border-radius:3px;background:var(--text);color:var(--bg);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer}
+.cal-dot.done-dot{background:var(--surface2);color:var(--text-faint);text-decoration:line-through}
+.cal-dot.overdue-dot{background:var(--danger-bg);color:var(--danger)}
+.cal-more{font-size:10px;color:var(--text-faint);padding-left:2px}
+.cal-legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+.cal-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted)}
+.cal-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 
 /* ===== SETTINGS PAGE ===== */
-.settings-stack { display: flex; flex-direction: column; gap: 20px; }
-.settings-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-  overflow: hidden; transition: background var(--transition), border-color var(--transition);
-}
-.settings-box-header {
-  padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
-  transition: border-color var(--transition);
-}
-.settings-box-header h2 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-.settings-box-header p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-.settings-box-body { padding: 16px 20px; }
+.settings-stack{display:flex;flex-direction:column;gap:20px}
+.settings-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:background var(--tr),border-color var(--tr)}
+.settings-box-header{padding:16px 20px 14px;border-bottom:1px solid var(--border);transition:border-color var(--tr)}
+.settings-box-header h2{font-size:14px;font-weight:700;margin-bottom:3px}
+.settings-box-header p{font-size:12px;color:var(--text-muted);line-height:1.5}
+.settings-box-body{padding:16px 20px}
+.cat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.cat-item{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;transition:background var(--tr),border-color var(--tr)}
+.cat-item-name{flex:1;font-size:13px;font-weight:500}
+.cat-item-count{font-size:11px;color:var(--text-faint);font-family:'Space Mono',monospace}
+.cat-item-actions{display:flex;gap:4px}
+.cat-action-btn{width:26px;height:26px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-faint);transition:all 0.12s}
+.cat-action-btn:hover{background:var(--surface2);color:var(--text)}
+.cat-action-btn.delete:hover{background:var(--danger-bg);color:var(--danger)}
+.cat-action-btn svg{width:14px;height:14px}
+.cat-add-row{display:flex;gap:8px}
+.cat-add-row input{flex:1}
+.theme-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.theme-toggle-info{flex:1}
+.t-label{font-size:13px;font-weight:500}
+.t-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+.toggle-switch{position:relative;width:52px;height:28px;flex-shrink:0;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;border-radius:14px;background:var(--surface2);border:1px solid var(--border);transition:background .2s,border-color .2s}
+.toggle-switch input:checked+.toggle-track{background:var(--text);border-color:var(--text)}
+.toggle-thumb{position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:var(--text-muted);transition:transform .2s,background .2s}
+.toggle-switch input:checked~.toggle-thumb{transform:translateX(24px);background:var(--bg)}
+.danger-zone-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.danger-info .d-label{font-size:13px;font-weight:500;color:var(--danger)}
+.danger-info .d-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
 
-/* Category list */
-.cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-.cat-item {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 8px 12px;
-  transition: background var(--transition), border-color var(--transition);
-}
-.cat-item-name { flex: 1; font-size: 13px; font-weight: 500; }
-.cat-item-count { font-size: 11px; color: var(--text-faint); font-family: 'Space Mono', monospace; }
-.cat-item-actions { display: flex; gap: 4px; }
-.cat-action-btn {
-  width: 26px; height: 26px; border-radius: 5px; border: none;
-  background: transparent; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-faint); transition: all 0.12s;
-}
-.cat-action-btn:hover { background: var(--surface2); color: var(--text); }
-.cat-action-btn.delete:hover { background: var(--danger-bg); color: var(--danger); }
-.cat-action-btn svg { width: 14px; height: 14px; }
-.cat-add-row { display: flex; gap: 8px; }
-.cat-add-row input { flex: 1; }
-
-/* Theme toggle */
-.theme-toggle-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.theme-toggle-info { flex: 1; }
-.theme-toggle-info .t-label { font-size: 13px; font-weight: 500; }
-.theme-toggle-info .t-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.toggle-switch {
-  position: relative; width: 52px; height: 28px; flex-shrink: 0; cursor: pointer;
-}
-.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-.toggle-track {
-  position: absolute; inset: 0; border-radius: 14px;
-  background: var(--surface2); border: 1px solid var(--border);
-  transition: background 0.2s, border-color 0.2s;
-}
-.toggle-switch input:checked + .toggle-track { background: var(--text); border-color: var(--text); }
-.toggle-thumb {
-  position: absolute; top: 4px; left: 4px;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--text-muted); transition: transform 0.2s, background 0.2s;
-}
-.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(24px); background: var(--bg); }
-
-/* Danger zone */
-.danger-zone-inner {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
-}
-.danger-info .d-label { font-size: 13px; font-weight: 500; color: var(--danger); }
-.danger-info .d-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+/* ===== EXPORT BOX ===== */
+.export-row{display:flex;gap:10px;flex-wrap:wrap}
+.export-card{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;flex-direction:column;gap:10px;transition:background var(--tr),border-color var(--tr)}
+.export-card-label{font-size:13px;font-weight:700}
+.export-card-desc{font-size:11px;color:var(--text-muted);line-height:1.5}
+.export-btns{display:flex;gap:7px;flex-wrap:wrap}
 
 /* ===== MODAL ===== */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 200;
-  align-items: center; justify-content: center; padding: 20px;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--bg); border-radius: var(--radius-lg);
-  border: 1px solid var(--border); padding: 26px 26px 22px;
-  max-width: 380px; width: 100%;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  transition: background var(--transition), border-color var(--transition);
-}
-.modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; }
-.modal p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px; }
-.modal-target { font-weight: 700; color: var(--text); }
-.modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
-.btn-delete-confirm { background: var(--danger); color: #fff; border-color: var(--danger); }
-.btn-delete-confirm:hover { opacity: 0.88; }
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.42);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border);padding:26px 26px 22px;max-width:400px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.15);transition:background var(--tr),border-color var(--tr)}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:7px}
+.modal p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:18px}
+.modal-target{font-weight:700;color:var(--text)}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.btn-delete-confirm{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn-delete-confirm:hover{opacity:.88}
+/* Cal detail modal */
+.cal-modal-date{font-family:'Space Mono',monospace;font-size:12px;color:var(--text-faint);margin-bottom:14px}
+.cal-modal-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.cal-modal-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border)}
+.cal-modal-item.done-item .cal-modal-title{text-decoration:line-through;color:var(--text-faint)}
+.cal-modal-check{flex-shrink:0;margin-top:1px}
+.cal-modal-body{flex:1;min-width:0}
+.cal-modal-title{font-size:13px;font-weight:700;margin-bottom:2px;word-break:break-all}
+.cal-modal-tag{font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;background:var(--text);color:var(--bg);display:inline-block}
+.modal-wide{max-width:480px}
 
-/* ===== TOAST ===== */
-.toast {
-  position: fixed; bottom: 24px; left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--text); color: var(--bg);
-  font-size: 13px; font-weight: 500;
-  padding: 9px 18px; border-radius: 20px;
-  opacity: 0; pointer-events: none;
-  transition: all 0.22s; z-index: 300; white-space: nowrap;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);color:var(--bg);font-size:13px;font-weight:500;padding:9px 18px;border-radius:20px;opacity:0;pointer-events:none;transition:all .22s;z-index:500;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== PWA Banners ===== */
+.offline-bar{display:none;background:#7a5520;color:#ffe4a0;font-size:12px;font-weight:500;text-align:center;padding:7px 16px}
+.offline-bar.show{display:block}
+.update-banner{display:none;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;text-align:center;font-size:13px;color:var(--text-muted);align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.update-banner.show{display:flex}
+.update-banner button{font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;padding:5px 14px;border-radius:6px;border:none;background:var(--text);color:var(--bg);cursor:pointer}
+.install-banner{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.25);z-index:400;max-width:calc(100vw - 32px);animation:slideUp .3s ease}
+.install-banner.hidden{display:none}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.install-banner-text{font-size:13px;font-weight:500;line-height:1.4;flex:1;min-width:0}
+.install-banner-text small{font-size:11px;opacity:.65;display:block;margin-top:2px}
+.install-banner-btn{font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;background:var(--bg);color:var(--text);white-space:nowrap;flex-shrink:0;transition:opacity .12s}
+.install-banner-btn:hover{opacity:.85}
+.install-banner-close{width:24px;height:24px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.install-banner-close svg{width:12px;height:12px}
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  main { padding: 18px 14px 80px; }
-  header, .nav-tabs { padding-left: 14px; padding-right: 14px; }
-  .add-form { padding: 14px; }
-  .card { padding: 12px 13px; }
-  .settings-box-header, .settings-box-body { padding: 14px 15px; }
-  .header-stats { gap: 10px; }
-  .stat { font-size: 11px; }
+@media(max-width:640px){
+  main{padding:18px 14px 80px;padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right));padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+  header,.nav-tabs{padding-left:14px;padding-right:14px}
+  .nav-tabs{padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}
+  .add-form,.settings-box-header,.settings-box-body{padding:14px}
+  .card{padding:12px 13px}
+  .cal-cell{min-height:56px}
+  .cal-dot{display:none}
+  .cal-cell.has-idea::after{content:'●';font-size:8px;color:var(--text);position:absolute;bottom:4px;left:50%;transform:translateX(-50%)}
+  .cal-cell.has-idea.overdue-cell::after{color:var(--danger)}
+  .export-row{flex-direction:column}
+}
+@media(max-width:400px){
+  .nav-tab{font-size:12px;padding:10px 11px}
+}
+
+/* ===== IMPORT ===== */
+.import-section { display:flex; flex-direction:column; gap:16px; }
+.import-type-tabs { display:flex; gap:8px; flex-wrap:wrap; }
+.import-type-btn {
+  font-family:'Noto Sans JP',sans-serif; font-size:12px; font-weight:700;
+  padding:6px 16px; border-radius:20px; border:1px solid var(--border);
+  background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.12s;
+}
+.import-type-btn:hover { border-color:var(--border-strong); color:var(--text); }
+.import-type-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
+.import-panels > div { display:none; }
+.import-panels > div.active { display:flex; flex-direction:column; gap:12px; }
+.drop-zone {
+  border:2px dashed var(--border); border-radius:var(--radius-lg);
+  padding:32px 20px; text-align:center; cursor:pointer;
+  transition:all 0.15s; background:var(--bg);
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color:var(--text); background:var(--surface2);
+}
+.drop-zone-icon { font-size:28px; margin-bottom:8px; opacity:.55; }
+.drop-zone-main { font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.drop-zone-sub { font-size:11px; color:var(--text-faint); }
+.drop-zone input[type="file"] { display:none; }
+.import-mode-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.import-mode-label { font-size:12px; font-weight:700; color:var(--text-muted); white-space:nowrap; }
+.radio-group { display:flex; gap:6px; flex-wrap:wrap; }
+.radio-pill {
+  display:flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:500; padding:5px 12px;
+  border-radius:20px; border:1px solid var(--border);
+  background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.12s;
+}
+.radio-pill input[type="radio"] { display:none; }
+.radio-pill.selected { background:var(--text); color:var(--bg); border-color:var(--text); }
+.import-preview-wrap {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); overflow:hidden;
+}
+.import-preview-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; border-bottom:1px solid var(--border);
+  font-size:12px; font-weight:700; gap:8px;
+}
+.import-preview-count {
+  font-family:'Space Mono',monospace; font-size:11px;
+  color:var(--text-muted); font-weight:400;
+}
+.import-preview-count .warn { color:var(--danger); }
+.import-preview-table-wrap { overflow-x:auto; max-height:220px; overflow-y:auto; }
+table.preview-table {
+  width:100%; border-collapse:collapse; font-size:12px;
+}
+.preview-table th {
+  position:sticky; top:0; background:var(--surface2);
+  text-align:left; padding:6px 10px; font-size:10px; font-weight:700;
+  letter-spacing:.8px; text-transform:uppercase; color:var(--text-faint);
+  border-bottom:1px solid var(--border); white-space:nowrap;
+}
+.preview-table td {
+  padding:7px 10px; border-bottom:1px solid var(--border);
+  vertical-align:top; color:var(--text-muted); line-height:1.4;
+}
+.preview-table tr:last-child td { border-bottom:none; }
+.preview-table .col-title { font-weight:600; color:var(--text); min-width:120px; }
+.preview-table .col-memo { max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.preview-table .col-sched { font-family:'Space Mono',monospace; font-size:11px; white-space:nowrap; }
+.preview-table .col-done { text-align:center; }
+.preview-table .badge-done { display:inline-block; font-size:10px; padding:1px 6px; border-radius:3px; background:var(--surface2); color:var(--text-faint); }
+.preview-table .badge-new { display:inline-block; font-size:10px; padding:1px 6px; border-radius:3px; background:var(--text); color:var(--bg); }
+.preview-table .badge-skip { display:inline-block; font-size:10px; padding:1px 6px; border-radius:3px; background:var(--done-bg); color:var(--text-faint); font-style:italic; }
+.import-error { font-size:12px; color:var(--danger); padding:10px 14px; background:var(--danger-bg); border-radius:var(--radius); }
+.import-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.import-summary { font-size:12px; color:var(--text-muted); }
+/* Settings import */
+.settings-import-preview {
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--radius); padding:12px 14px;
+  display:flex; flex-direction:column; gap:8px; font-size:12px;
+}
+.sip-row { display:flex; gap:8px; align-items:flex-start; }
+.sip-label { font-weight:700; color:var(--text-muted); min-width:80px; flex-shrink:0; }
+.sip-value { color:var(--text); line-height:1.5; }
+.cat-chip {
+  display:inline-block; font-size:10px; font-weight:700;
+  padding:2px 8px; border-radius:4px; background:var(--text);
+  color:var(--bg); margin:2px 2px 0 0;
+}
+
+
+
+/* ===== ABOUT PAGE ===== */
+.about-page { display:flex; flex-direction:column; gap:24px; max-width:600px; margin:0 auto; }
+.about-hero {
+  text-align:center; padding:40px 24px 32px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  transition:background var(--tr),border-color var(--tr);
+}
+.about-app-icon {
+  width:72px; height:72px; border-radius:18px;
+  background:var(--text); display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; transition:background var(--tr);
+}
+.about-app-icon svg { width:38px; height:38px; color:var(--bg); }
+.about-app-name {
+  font-family:'Space Mono',monospace; font-size:22px; font-weight:700;
+  letter-spacing:-.5px; margin-bottom:6px;
+}
+.about-app-tagline { font-size:13px; color:var(--text-muted); line-height:1.6; }
+.about-version-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:16px; padding:5px 14px; border-radius:20px;
+  border:1px solid var(--border); background:var(--bg);
+  font-family:'Space Mono',monospace; font-size:12px; color:var(--text-muted);
+  transition:background var(--tr),border-color var(--tr);
+}
+.about-version-badge .vdot {
+  width:7px; height:7px; border-radius:50%; background:var(--accent-green); flex-shrink:0;
+}
+.about-section {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  overflow:hidden; transition:background var(--tr),border-color var(--tr);
+}
+.about-section-title {
+  font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase;
+  color:var(--text-faint); padding:14px 18px 10px;
+  border-bottom:1px solid var(--border); transition:border-color var(--tr);
+}
+.about-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px; border-bottom:1px solid var(--border); gap:12px;
+  transition:border-color var(--tr);
+}
+.about-row:last-child { border-bottom:none; }
+.about-row-label { font-size:13px; font-weight:500; color:var(--text); }
+.about-row-value { font-size:13px; color:var(--text-muted); font-family:'Space Mono',monospace; text-align:right; }
+.about-row-value.highlight { color:var(--text); font-weight:700; }
+.about-check-btn {
+  display:flex; align-items:center; gap:6px;
+  font-family:'Noto Sans JP',sans-serif; font-size:12px; font-weight:500;
+  padding:5px 12px; border-radius:var(--radius); border:1px solid var(--border);
+  background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.12s;
+  white-space:nowrap;
+}
+.about-check-btn:hover { border-color:var(--border-strong); color:var(--text); }
+.about-check-btn svg { width:13px; height:13px; flex-shrink:0; }
+.about-feature-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
+  background:var(--border);
+}
+.about-feature-cell {
+  background:var(--surface); padding:14px 16px;
+  display:flex; align-items:flex-start; gap:10px;
+  transition:background var(--tr);
+}
+.about-feature-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.about-feature-label { font-size:12px; font-weight:700; margin-bottom:2px; }
+.about-feature-desc { font-size:11px; color:var(--text-muted); line-height:1.5; }
+.about-links { display:flex; flex-direction:column; }
+.about-link-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px; border-bottom:1px solid var(--border);
+  gap:12px; cursor:default; transition:all 0.12s;
+}
+.about-link-row:last-child { border-bottom:none; }
+.about-link-row-inner { display:flex; align-items:center; gap:10px; }
+.about-link-icon { width:30px; height:30px; border-radius:8px; background:var(--surface2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.about-link-icon svg { width:15px; height:15px; color:var(--text-muted); }
+.about-link-label { font-size:13px; font-weight:500; }
+.about-link-sub { font-size:11px; color:var(--text-faint); margin-top:1px; }
+.about-link-arrow { color:var(--text-faint); }
+.about-link-arrow svg { width:14px; height:14px; }
+.about-storage-bar-wrap { padding:14px 18px; display:flex; flex-direction:column; gap:8px; }
+.about-storage-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); }
+.about-storage-bar { height:6px; border-radius:3px; background:var(--surface2); overflow:hidden; }
+.about-storage-fill { height:100%; border-radius:3px; background:var(--text); transition:width 0.4s ease; }
+.about-copyright {
+  text-align:center; font-size:11px; color:var(--text-faint);
+  padding:8px 0 16px; line-height:1.8;
+}
+@media(max-width:480px){
+  .about-feature-grid { grid-template-columns:1fr; }
+  .about-hero { padding:28px 16px 24px; }
 }
 </style>
 </head>
@@ -359,132 +463,472 @@ select {
 
 <header>
   <div class="header-inner">
-    <div class="logo" onclick="showPage('ideas')">
-      <span class="logo-badge">企画</span>ノート
-    </div>
-    <div class="header-right">
-      <div class="header-stats">
-        <div class="stat">全 <strong id="stat-total">0</strong> 件</div>
-        <div class="stat">完了 <strong id="stat-done">0</strong> 件</div>
-      </div>
+    <div class="logo" onclick="showPage('ideas')"><span class="logo-badge">企画</span>ノート</div>
+    <div class="header-stats">
+      <div class="stat">全 <strong id="stat-total">0</strong> 件</div>
+      <div class="stat">完了 <strong id="stat-done">0</strong> 件</div>
     </div>
   </div>
 </header>
 
+<div class="offline-bar" id="offline-bar">📵 オフライン — データはローカルに保存されています</div>
+<div class="update-banner" id="update-banner">新しいバージョンがあります <button onclick="applyUpdate()">今すぐ更新</button></div>
+
 <nav class="nav-tabs">
-  <button class="nav-tab active" id="tab-ideas" onclick="showPage('ideas')">企画リスト</button>
-  <button class="nav-tab" id="tab-settings" onclick="showPage('settings')">設定</button>
+  <button class="nav-tab active" id="tab-ideas"    onclick="showPage('ideas')">企画リスト</button>
+  <button class="nav-tab"        id="tab-calendar" onclick="showPage('calendar')">カレンダー</button>
+  <button class="nav-tab"        id="tab-settings" onclick="showPage('settings')">設定</button>
+  <button class="nav-tab"        id="tab-about"    onclick="showPage('about')">アプリ情報</button>
 </nav>
 
 <main>
-  <!-- ===== IDEAS PAGE ===== -->
-  <div class="page active" id="page-ideas">
 
-    <section class="add-section">
-      <div class="add-form">
-        <div class="section-label">新しい企画を登録</div>
-        <input type="text" id="input-title" placeholder="企画タイトルを入力..." maxlength="100" autocomplete="off">
-        <textarea id="input-memo" placeholder="メモ・アイデアを自由に書く（任意）" maxlength="500"></textarea>
-        <div class="sub-row">
-          <select id="input-category"></select>
-          <button class="btn btn-primary" onclick="addIdea()">＋ 登録する</button>
+<!-- ===== IDEAS PAGE ===== -->
+<div class="page active" id="page-ideas">
+  <section class="add-section">
+    <div class="add-form">
+      <div class="section-label">新しい企画を登録</div>
+      <input type="text" id="input-title" placeholder="企画タイトルを入力..." maxlength="100" autocomplete="off">
+      <textarea id="input-memo" placeholder="メモ・アイデアを自由に書く（任意）" maxlength="500"></textarea>
+      <div class="sub-row">
+        <select id="input-category"></select>
+        <div class="date-field-wrap">
+          <span class="date-field-label">📅 実施日</span>
+          <input type="date" id="input-schedule">
+          <button class="date-clear-btn" onclick="clearSchedule('input-schedule')" title="日付をクリア">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
       </div>
-    </section>
-
-    <section>
-      <div class="list-header">
-        <div class="list-header-left">
-          <div class="list-title">企画リスト</div>
-          <div class="filter-bar">
-            <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
-            <button class="filter-btn" onclick="setFilter('active',this)">未完了</button>
-            <button class="filter-btn" onclick="setFilter('done',this)">完了済</button>
-          </div>
-        </div>
-        <button class="bulk-delete-btn" onclick="askBulkDelete()" id="bulk-delete-btn" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-          </svg>
-          完了済みを一括削除
+      <div class="sub-row" style="justify-content:flex-end">
+        <button class="btn btn-primary" onclick="addIdea()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          登録する
         </button>
       </div>
-      <div class="card-list" id="card-list"></div>
-      <div class="empty" id="empty-state" style="display:none">
-        <div class="empty-icon">📋</div>
-        <p>企画がありません。<br>上のフォームから登録してみましょう！</p>
-      </div>
-    </section>
-  </div>
-
-  <!-- ===== SETTINGS PAGE ===== -->
-  <div class="page" id="page-settings">
-    <div class="settings-stack">
-
-      <!-- カテゴリ管理 -->
-      <div class="settings-box">
-        <div class="settings-box-header">
-          <h2>カテゴリ管理</h2>
-          <p>企画に付けるカテゴリを追加・編集・削除できます。</p>
-        </div>
-        <div class="settings-box-body">
-          <div class="cat-list" id="cat-list"></div>
-          <div class="cat-add-row">
-            <input type="text" id="new-cat-input" placeholder="新しいカテゴリ名を入力..." maxlength="20" autocomplete="off">
-            <button class="btn btn-primary btn-sm" onclick="addCategory()">追加</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- テーマ切り替え -->
-      <div class="settings-box">
-        <div class="settings-box-header">
-          <h2>テーマ</h2>
-          <p>ライトモードとダークモードを切り替えます。</p>
-        </div>
-        <div class="settings-box-body">
-          <div class="theme-toggle-row">
-            <div class="theme-toggle-info">
-              <div class="t-label" id="theme-label">ライトモード</div>
-              <div class="t-sub">現在のテーマ設定</div>
-            </div>
-            <label class="toggle-switch" title="テーマ切り替え">
-              <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- データ一括削除 -->
-      <div class="settings-box">
-        <div class="settings-box-header" style="border-bottom:none; padding-bottom:0;">
-          <h2 style="color:var(--danger)">データの一括削除</h2>
-          <p>すべての企画データを削除します。この操作は元に戻せません。</p>
-        </div>
-        <div class="settings-box-body">
-          <div class="danger-zone-inner">
-            <div class="danger-info">
-              <div class="d-label">全データを削除する</div>
-              <div class="d-sub">登録済みのすべての企画が削除されます</div>
-            </div>
-            <button class="btn btn-danger-outline btn-sm" onclick="askDeleteAll()">すべて削除</button>
-          </div>
-        </div>
-      </div>
-
     </div>
+  </section>
+
+  <section>
+    <div class="list-header">
+      <div class="list-header-left">
+        <div class="list-title">企画リスト</div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
+          <button class="filter-btn" onclick="setFilter('active',this)">未完了</button>
+          <button class="filter-btn" onclick="setFilter('done',this)">完了済</button>
+        </div>
+      </div>
+      <button class="bulk-delete-btn" onclick="askBulkDelete()" id="bulk-delete-btn" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        完了済みを一括削除
+      </button>
+    </div>
+    <div class="card-list" id="card-list"></div>
+    <div class="empty" id="empty-state" style="display:none">
+      <div class="empty-icon">📋</div>
+      <p>企画がありません。<br>上のフォームから登録してみましょう！</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===== CALENDAR PAGE ===== -->
+<div class="page" id="page-calendar">
+  <div class="cal-header">
+    <button class="cal-nav-btn" onclick="calMove(-1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="cal-month-label" id="cal-month-label"></div>
+    <button class="cal-today-btn" onclick="calGoToday()">今月</button>
+    <button class="cal-nav-btn" onclick="calMove(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
   </div>
+  <div class="cal-grid-wrap">
+    <div class="cal-dow-row">
+      <div class="cal-dow">日</div><div class="cal-dow">月</div><div class="cal-dow">火</div>
+      <div class="cal-dow">水</div><div class="cal-dow">木</div><div class="cal-dow">金</div>
+      <div class="cal-dow" style="color:var(--accent-blue)">土</div>
+    </div>
+    <div class="cal-body" id="cal-body"></div>
+  </div>
+  <div class="cal-legend">
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--text)"></div>予定あり</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--danger-bg);border:1px solid var(--danger)"></div>期限超過</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--surface2)"></div>完了済</div>
+  </div>
+</div>
+
+<!-- ===== SETTINGS PAGE ===== -->
+<div class="page" id="page-settings">
+  <div class="settings-stack">
+
+    <!-- カテゴリ管理 -->
+    <div class="settings-box">
+      <div class="settings-box-header">
+        <h2>カテゴリ管理</h2>
+        <p>企画に付けるカテゴリを追加・編集・削除できます。</p>
+      </div>
+      <div class="settings-box-body">
+        <div class="cat-list" id="cat-list"></div>
+        <div class="cat-add-row">
+          <input type="text" id="new-cat-input" placeholder="新しいカテゴリ名を入力..." maxlength="20" autocomplete="off">
+          <button class="btn btn-primary btn-sm" onclick="addCategory()">追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- テーマ -->
+    <div class="settings-box">
+      <div class="settings-box-header">
+        <h2>テーマ</h2>
+        <p>ライトモードとダークモードを切り替えます。</p>
+      </div>
+      <div class="settings-box-body">
+        <div class="theme-toggle-row">
+          <div class="theme-toggle-info">
+            <div class="t-label" id="theme-label">ライトモード</div>
+            <div class="t-sub">現在のテーマ設定</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- エクスポート -->
+    <div class="settings-box">
+      <div class="settings-box-header">
+        <h2>データのエクスポート</h2>
+        <p>企画データと設定データをそれぞれ個別にエクスポートできます。</p>
+      </div>
+      <div class="settings-box-body">
+        <div class="export-row">
+          <!-- 企画データ -->
+          <div class="export-card">
+            <div class="export-card-label">📋 企画データ</div>
+            <div class="export-card-desc">登録している企画のタイトル・メモ・カテゴリ・実施日・完了状態をエクスポートします。</div>
+            <div class="export-btns">
+              <button class="btn btn-ghost btn-sm" onclick="exportIdeas('json')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                JSON
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="exportIdeas('csv')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV
+              </button>
+            </div>
+          </div>
+          <!-- 設定データ -->
+          <div class="export-card">
+            <div class="export-card-label">⚙️ 設定データ</div>
+            <div class="export-card-desc">カスタムカテゴリ・テーマ設定をエクスポートします。別の端末への移行などに利用できます。</div>
+            <div class="export-btns">
+              <button class="btn btn-ghost btn-sm" onclick="exportSettings()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                JSON
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- インポート -->
+    <div class="settings-box">
+      <div class="settings-box-header">
+        <h2>データのインポート</h2>
+        <p>エクスポートしたJSONファイルまたはCSVファイルから企画・設定データを読み込みます。</p>
+      </div>
+      <div class="settings-box-body">
+        <div class="import-section">
+
+          <!-- タブ切り替え -->
+          <div class="import-type-tabs">
+            <button class="import-type-btn active" onclick="switchImportTab('ideas',this)">📋 企画データ</button>
+            <button class="import-type-btn" onclick="switchImportTab('settings',this)">⚙️ 設定データ</button>
+          </div>
+
+          <div class="import-panels">
+
+            <!-- 企画インポートパネル -->
+            <div id="import-panel-ideas" class="active">
+              <!-- ドロップゾーン -->
+              <div class="drop-zone" id="drop-zone-ideas"
+                onclick="document.getElementById('file-input-ideas').click()"
+                ondragover="dzOver(event,'ideas')" ondragleave="dzLeave('ideas')" ondrop="dzDrop(event,'ideas')">
+                <input type="file" id="file-input-ideas" accept=".json,.csv" onchange="handleFileSelect(event,'ideas')">
+                <div class="drop-zone-icon">📂</div>
+                <div class="drop-zone-main">ファイルを選択 またはドラッグ＆ドロップ</div>
+                <div class="drop-zone-sub">対応形式：JSON / CSV（企画ノートのエクスポートファイル）</div>
+              </div>
+
+              <!-- 取り込みモード -->
+              <div class="import-mode-row">
+                <span class="import-mode-label">取り込みモード</span>
+                <div class="radio-group" id="import-mode-group">
+                  <label class="radio-pill selected" onclick="selectImportMode('merge',this)">
+                    <input type="radio" name="import-mode" value="merge" checked> 追加（既存を保持）
+                  </label>
+                  <label class="radio-pill" onclick="selectImportMode('replace',this)">
+                    <input type="radio" name="import-mode" value="replace"> 上書き（既存を削除）
+                  </label>
+                </div>
+              </div>
+
+              <!-- プレビュー -->
+              <div id="import-preview-ideas" style="display:none">
+                <div class="import-preview-wrap">
+                  <div class="import-preview-header">
+                    <span>プレビュー</span>
+                    <span class="import-preview-count" id="import-count-label"></span>
+                  </div>
+                  <div class="import-preview-table-wrap">
+                    <table class="preview-table">
+                      <thead><tr>
+                        <th>タイトル</th><th>カテゴリ</th><th>実施日</th><th>状態</th><th></th>
+                      </tr></thead>
+                      <tbody id="import-preview-tbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="import-actions">
+                  <button class="btn btn-primary btn-sm" onclick="executeImportIdeas()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+                    インポートする
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="resetImport('ideas')">キャンセル</button>
+                  <span class="import-summary" id="import-summary-ideas"></span>
+                </div>
+              </div>
+              <div id="import-error-ideas" class="import-error" style="display:none"></div>
+            </div>
+
+            <!-- 設定インポートパネル -->
+            <div id="import-panel-settings">
+              <div class="drop-zone" id="drop-zone-settings"
+                onclick="document.getElementById('file-input-settings').click()"
+                ondragover="dzOver(event,'settings')" ondragleave="dzLeave('settings')" ondrop="dzDrop(event,'settings')">
+                <input type="file" id="file-input-settings" accept=".json" onchange="handleFileSelect(event,'settings')">
+                <div class="drop-zone-icon">⚙️</div>
+                <div class="drop-zone-main">ファイルを選択 またはドラッグ＆ドロップ</div>
+                <div class="drop-zone-sub">対応形式：JSON（設定エクスポートファイル）</div>
+              </div>
+
+              <!-- 設定プレビュー -->
+              <div id="import-preview-settings" style="display:none">
+                <div class="settings-import-preview" id="settings-preview-content"></div>
+                <div class="import-actions" style="margin-top:8px">
+                  <button class="btn btn-primary btn-sm" onclick="executeImportSettings()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+                    設定を適用する
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="resetImport('settings')">キャンセル</button>
+                </div>
+              </div>
+              <div id="import-error-settings" class="import-error" style="display:none"></div>
+            </div>
+
+          </div><!-- /import-panels -->
+        </div>
+      </div>
+    </div>
+
+    <!-- データ一括削除 -->
+    <div class="settings-box">
+      <div class="settings-box-header" style="border-bottom:none;padding-bottom:0">
+        <h2 style="color:var(--danger)">データの一括削除</h2>
+        <p>すべての企画データを削除します。この操作は元に戻せません。</p>
+      </div>
+      <div class="settings-box-body">
+        <div class="danger-zone-inner">
+          <div class="danger-info">
+            <div class="d-label">全データを削除する</div>
+            <div class="d-sub">登録済みのすべての企画が削除されます</div>
+          </div>
+          <button class="btn btn-danger-outline btn-sm" onclick="askDeleteAll()">すべて削除</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="page-about">
+  <div class="about-page">
+
+    <!-- Hero -->
+    <div class="about-hero">
+      <div class="about-app-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div class="about-app-name">企画ノート</div>
+      <div class="about-app-tagline">YouTuberのための動画企画管理アプリ<br>思いついた企画をすぐに記録・管理</div>
+      <div class="about-version-badge">
+        <span class="vdot"></span>
+        <span id="about-version-text">Version 1.0.0</span>
+      </div>
+    </div>
+
+    <!-- バージョン / ビルド情報 -->
+    <div class="about-section">
+      <div class="about-section-title">バージョン情報</div>
+      <div class="about-row">
+        <span class="about-row-label">バージョン</span>
+        <span class="about-row-value highlight">1.0.0</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">ビルド日</span>
+        <span class="about-row-value" id="about-build-date">2025-05-27</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">リリースチャンネル</span>
+        <span class="about-row-value">Stable</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">Service Worker</span>
+        <span class="about-row-value" id="about-sw-status">確認中…</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">インストール状態</span>
+        <span class="about-row-value" id="about-install-status">確認中…</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">アップデート確認</span>
+        <button class="about-check-btn" onclick="checkForUpdate()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          確認する
+        </button>
+      </div>
+    </div>
+
+    <!-- データ統計 -->
+    <div class="about-section">
+      <div class="about-section-title">データ統計</div>
+      <div class="about-row">
+        <span class="about-row-label">登録企画数</span>
+        <span class="about-row-value highlight" id="about-total-ideas">—</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">完了済み</span>
+        <span class="about-row-value" id="about-done-ideas">—</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">未完了</span>
+        <span class="about-row-value" id="about-active-ideas">—</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">カテゴリ数</span>
+        <span class="about-row-value" id="about-cat-count">—</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">実施日設定済み</span>
+        <span class="about-row-value" id="about-scheduled-count">—</span>
+      </div>
+      <div class="about-storage-bar-wrap">
+        <div class="about-storage-label">
+          <span>ストレージ使用量</span>
+          <span id="about-storage-size">計算中…</span>
+        </div>
+        <div class="about-storage-bar">
+          <div class="about-storage-fill" id="about-storage-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 機能一覧 -->
+    <div class="about-section">
+      <div class="about-section-title">主な機能</div>
+      <div class="about-feature-grid">
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">📋</div>
+          <div>
+            <div class="about-feature-label">企画管理</div>
+            <div class="about-feature-desc">タイトル・メモ・カテゴリで企画を登録・整理</div>
+          </div>
+        </div>
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">📅</div>
+          <div>
+            <div class="about-feature-label">カレンダー</div>
+            <div class="about-feature-desc">実施日を登録してカレンダーで一覧表示</div>
+          </div>
+        </div>
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">📤</div>
+          <div>
+            <div class="about-feature-label">エクスポート</div>
+            <div class="about-feature-desc">JSON・CSV形式でデータをバックアップ</div>
+          </div>
+        </div>
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">📥</div>
+          <div>
+            <div class="about-feature-label">インポート</div>
+            <div class="about-feature-desc">ファイルから企画・設定を一括取り込み</div>
+          </div>
+        </div>
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">🌙</div>
+          <div>
+            <div class="about-feature-label">ダークモード</div>
+            <div class="about-feature-desc">目に優しいダーク表示に切り替え可能</div>
+          </div>
+        </div>
+        <div class="about-feature-cell">
+          <div class="about-feature-icon">📱</div>
+          <div>
+            <div class="about-feature-label">PWA対応</div>
+            <div class="about-feature-desc">ホーム画面に追加してオフラインでも動作</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 開発元 -->
+    <div class="about-section">
+      <div class="about-section-title">開発元</div>
+      <div class="about-row">
+        <span class="about-row-label">開発元</span>
+        <span class="about-row-value">カエルム</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">データ保存</span>
+        <span class="about-row-value">デバイスのローカルストレージのみ</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">外部通信</span>
+        <span class="about-row-value">Google Fonts のみ</span>
+      </div>
+    </div>
+
+    <div class="about-copyright">
+      © 2025 企画ノート<br>
+      Built with HTML / CSS / JavaScript
+    </div>
+
+  </div>
+</div>
+
 </main>
 
 <!-- ===== MODAL ===== -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
+  <div class="modal" id="modal-box">
     <h3 id="modal-title">確認</h3>
     <p id="modal-body"></p>
-    <div class="modal-btns">
+    <div class="modal-btns" id="modal-btns">
       <button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
       <button class="btn btn-primary btn-delete-confirm" id="modal-confirm-btn" onclick="modalConfirm()">削除する</button>
     </div>
@@ -493,362 +937,908 @@ select {
 
 <div class="toast" id="toast"></div>
 
-<script>
-const STORAGE_KEY = 'kikakunote_v2';
-const THEME_KEY = 'kikakunote_theme';
-const CAT_KEY = 'kikakunote_cats_v2';
+<div class="install-banner hidden" id="install-banner">
+  <div class="install-banner-text">ホーム画面に追加<small>オフラインでも使えます</small></div>
+  <button class="install-banner-btn" onclick="triggerInstall()">追加する</button>
+  <button class="install-banner-close" onclick="dismissInstall()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
 
-let ideas = [];
+<script>
+/* =====================================================
+   企画ノート — Main Script
+   ===================================================== */
+const STORAGE_KEY = 'kikakunote_v2';
+const THEME_KEY   = 'kikakunote_theme';
+const CAT_KEY     = 'kikakunote_cats_v2';
+
+let ideas      = [];
 let categories = [];
 let currentFilter = 'all';
-let editingId = null;
-let modalAction = null;
-let modalPayload = null;
+let editingId     = null;
+let modalAction   = null;
+let modalPayload  = null;
 
-/* ===== DEFAULT CATEGORIES ===== */
+// Calendar state
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth(); // 0-based
+
 const DEFAULT_CATS = [
-  { id: 'howto', name: 'ハウツー' },
-  { id: 'vlog',  name: 'Vlog' },
-  { id: 'review', name: 'レビュー' },
-  { id: 'collab', name: 'コラボ' },
-  { id: 'series', name: 'シリーズ' },
-  { id: 'short',  name: 'ショート' },
-  { id: 'other',  name: 'その他' },
+  {id:'howto',name:'ハウツー'},{id:'vlog',name:'Vlog'},
+  {id:'review',name:'レビュー'},{id:'collab',name:'コラボ'},
+  {id:'series',name:'シリーズ'},{id:'short',name:'ショート'},
+  {id:'other',name:'その他'},
 ];
 
 /* ===== STORAGE ===== */
 function load() {
   try { ideas = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e){ ideas=[]; }
   try { categories = JSON.parse(localStorage.getItem(CAT_KEY)); } catch(e){ categories=null; }
-  if (!categories || !Array.isArray(categories) || categories.length===0) {
+  if (!categories || !Array.isArray(categories) || categories.length===0)
     categories = DEFAULT_CATS.map(c=>({...c}));
-  }
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
-  applyTheme(savedTheme, false);
+  applyTheme(localStorage.getItem(THEME_KEY)||'light', false);
 }
-function saveIdeas() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas)); } catch(e){} }
-function saveCats()  { try { localStorage.setItem(CAT_KEY, JSON.stringify(categories)); } catch(e){} }
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
-function formatDate(ts) {
-  const d=new Date(ts); return `${d.getMonth()+1}/${d.getDate()}`;
+function saveIdeas(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(ideas)); }catch(e){} }
+function saveCats() { try{ localStorage.setItem(CAT_KEY,JSON.stringify(categories)); }catch(e){} }
+function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function getCatName(id){ const c=categories.find(c=>c.id===id); return c?c.name:id; }
+function fmtCreated(ts){ const d=new Date(ts); return `${d.getMonth()+1}/${d.getDate()}`; }
+function fmtSchedule(s){
+  if(!s) return '';
+  const [y,m,d]=s.split('-').map(Number);
+  return `${y}年${m}月${d}日`;
 }
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function getCatName(id) {
-  const c = categories.find(c=>c.id===id);
-  return c ? c.name : id;
+function scheduleStatus(s){
+  if(!s) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const [y,m,d]=s.split('-').map(Number);
+  const sd = new Date(y,m-1,d);
+  if(sd<today) return 'overdue';
+  if(sd.getTime()===today.getTime()) return 'today';
+  return 'future';
 }
 
 /* ===== THEME ===== */
-function applyTheme(theme, save=true) {
-  document.documentElement.setAttribute('data-theme', theme);
-  const isDark = theme === 'dark';
-  const toggle = document.getElementById('theme-toggle');
-  const label  = document.getElementById('theme-label');
-  if (toggle) toggle.checked = isDark;
-  if (label)  label.textContent = isDark ? 'ダークモード' : 'ライトモード';
-  if (save) localStorage.setItem(THEME_KEY, theme);
+function applyTheme(theme,save=true){
+  document.documentElement.setAttribute('data-theme',theme);
+  const isDark=theme==='dark';
+  const t=document.getElementById('theme-toggle'), l=document.getElementById('theme-label');
+  if(t) t.checked=isDark;
+  if(l) l.textContent=isDark?'ダークモード':'ライトモード';
+  if(save) localStorage.setItem(THEME_KEY,theme);
+  syncThemeColor();
 }
-function toggleTheme() {
-  const isDark = document.getElementById('theme-toggle').checked;
-  applyTheme(isDark ? 'dark' : 'light');
-  showToast(isDark ? 'ダークモードに切り替えました' : 'ライトモードに切り替えました');
+function toggleTheme(){
+  const isDark=document.getElementById('theme-toggle').checked;
+  applyTheme(isDark?'dark':'light');
+  showToast(isDark?'ダークモードに切り替えました':'ライトモードに切り替えました');
 }
 
 /* ===== PAGE NAV ===== */
-function showPage(name) {
+function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
-  if (name==='settings') renderSettings();
+  if(name==='settings') renderSettings();
+  if(name==='calendar') renderCalendar();
+  if(name==='about') renderAbout();
 }
 
 /* ===== ADD IDEA ===== */
-function addIdea() {
-  const title = document.getElementById('input-title').value.trim();
-  if (!title) { showToast('タイトルを入力してください'); document.getElementById('input-title').focus(); return; }
-  const memo = document.getElementById('input-memo').value.trim();
-  const category = document.getElementById('input-category').value;
-  ideas.unshift({ id: genId(), title, memo, category, done: false, createdAt: Date.now() });
+function addIdea(){
+  const title=document.getElementById('input-title').value.trim();
+  if(!title){ showToast('タイトルを入力してください'); document.getElementById('input-title').focus(); return; }
+  const memo=document.getElementById('input-memo').value.trim();
+  const category=document.getElementById('input-category').value;
+  const schedule=document.getElementById('input-schedule').value||'';
+  ideas.unshift({id:genId(),title,memo,category,schedule,done:false,createdAt:Date.now()});
   saveIdeas();
-  document.getElementById('input-title').value = '';
-  document.getElementById('input-memo').value = '';
+  document.getElementById('input-title').value='';
+  document.getElementById('input-memo').value='';
+  document.getElementById('input-schedule').value='';
   render();
   showToast('企画を登録しました！');
 }
 
+function clearSchedule(inputId){
+  document.getElementById(inputId).value='';
+}
+
 /* ===== TOGGLE DONE ===== */
-function toggleDone(id) {
-  const idea = ideas.find(i=>i.id===id);
-  if (!idea) return;
-  idea.done = !idea.done;
-  saveIdeas(); render();
-  showToast(idea.done ? '完了にしました ✓' : '未完了に戻しました');
+function toggleDone(id){
+  const idea=ideas.find(i=>i.id===id); if(!idea) return;
+  idea.done=!idea.done; saveIdeas(); render();
+  showToast(idea.done?'完了にしました ✓':'未完了に戻しました');
+  if(document.getElementById('page-calendar').classList.contains('active')) renderCalendar();
 }
 
 /* ===== EDIT ===== */
-function startEdit(id) { editingId=id; render(); setTimeout(()=>{ const el=document.getElementById('edit-title-'+id); if(el)el.focus(); },30); }
-function cancelEdit() { editingId=null; render(); }
-function saveEdit(id) {
+function startEdit(id){ editingId=id; render(); setTimeout(()=>{ const el=document.getElementById('edit-title-'+id); if(el)el.focus(); },30); }
+function cancelEdit(){ editingId=null; render(); }
+function saveEdit(id){
   const t=document.getElementById('edit-title-'+id);
   const m=document.getElementById('edit-memo-'+id);
   const c=document.getElementById('edit-cat-'+id);
-  if (!t) return;
+  const s=document.getElementById('edit-schedule-'+id);
+  if(!t) return;
   const newTitle=t.value.trim();
-  if (!newTitle) { showToast('タイトルを入力してください'); t.focus(); return; }
-  const idea=ideas.find(i=>i.id===id);
-  if (!idea) return;
+  if(!newTitle){ showToast('タイトルを入力してください'); t.focus(); return; }
+  const idea=ideas.find(i=>i.id===id); if(!idea) return;
   idea.title=newTitle; idea.memo=m.value.trim(); idea.category=c.value;
+  idea.schedule=s?s.value:'';
   editingId=null; saveIdeas(); render(); showToast('変更を保存しました');
+  if(document.getElementById('page-calendar').classList.contains('active')) renderCalendar();
 }
 
-/* ===== DELETE (single) ===== */
-function askDelete(id) {
+/* ===== DELETE ===== */
+function askDelete(id){
   const idea=ideas.find(i=>i.id===id); if(!idea) return;
   openModal('企画を削除しますか？',
     `「<span class="modal-target">${escHtml(idea.title)}</span>」を削除します。この操作は元に戻せません。`,
     'delete-one', id, '削除する');
 }
-
-/* ===== BULK DELETE (done) ===== */
-function askBulkDelete() {
-  const doneCount = ideas.filter(i=>i.done).length;
-  if (doneCount===0) { showToast('完了済みの企画がありません'); return; }
-  openModal('完了済みを一括削除',
-    `完了済みの企画 <strong>${doneCount}件</strong> をすべて削除します。この操作は元に戻せません。`,
-    'bulk-delete', null, '一括削除する');
+function askBulkDelete(){
+  const n=ideas.filter(i=>i.done).length;
+  if(!n){ showToast('完了済みの企画がありません'); return; }
+  openModal('完了済みを一括削除',`完了済みの企画 <strong>${n}件</strong> をすべて削除します。この操作は元に戻せません。`,'bulk-delete',null,'一括削除する');
 }
-
-/* ===== DELETE ALL ===== */
-function askDeleteAll() {
-  if (ideas.length===0) { showToast('削除するデータがありません'); return; }
-  openModal('すべてのデータを削除しますか？',
-    `登録済みの企画 <strong>${ideas.length}件</strong> をすべて削除します。この操作は元に戻せません。`,
-    'delete-all', null, 'すべて削除する');
+function askDeleteAll(){
+  if(!ideas.length){ showToast('削除するデータがありません'); return; }
+  openModal('すべてのデータを削除しますか？',`登録済みの企画 <strong>${ideas.length}件</strong> をすべて削除します。この操作は元に戻せません。`,'delete-all',null,'すべて削除する');
 }
 
 /* ===== MODAL ===== */
-function openModal(title, body, action, payload, confirmLabel) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = body;
-  document.getElementById('modal-confirm-btn').textContent = confirmLabel;
+function openModal(title,body,action,payload,confirmLabel,wide=false){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=body;
+  const btn=document.getElementById('modal-confirm-btn');
+  btn.textContent=confirmLabel; btn.style.display='';
+  document.getElementById('modal-box').className='modal'+(wide?' modal-wide':'');
+  document.getElementById('modal-btns').innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+    <button class="btn btn-primary btn-delete-confirm" id="modal-confirm-btn" onclick="modalConfirm()">${confirmLabel}</button>`;
   modalAction=action; modalPayload=payload;
   document.getElementById('modal-overlay').classList.add('open');
 }
-function closeModal() {
+function openInfoModal(title,bodyHtml){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=bodyHtml;
+  document.getElementById('modal-box').className='modal modal-wide';
+  document.getElementById('modal-btns').innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>`;
   modalAction=null; modalPayload=null;
-  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay').classList.add('open');
 }
-function modalConfirm() {
-  if (modalAction==='delete-one') {
+function closeModal(){ modalAction=null; modalPayload=null; document.getElementById('modal-overlay').classList.remove('open'); }
+function modalConfirm(){
+  if(modalAction==='delete-one'){
     ideas=ideas.filter(i=>i.id!==modalPayload);
     saveIdeas(); closeModal(); render(); showToast('削除しました');
-  } else if (modalAction==='bulk-delete') {
-    const before=ideas.length;
-    ideas=ideas.filter(i=>!i.done);
-    const removed=before-ideas.length;
-    saveIdeas(); closeModal(); render(); showToast(`${removed}件を削除しました`);
-  } else if (modalAction==='delete-all') {
+  } else if(modalAction==='bulk-delete'){
+    const before=ideas.length; ideas=ideas.filter(i=>!i.done);
+    saveIdeas(); closeModal(); render(); showToast(`${before-ideas.length}件を削除しました`);
+  } else if(modalAction==='delete-all'){
     ideas=[]; saveIdeas(); closeModal(); render(); showToast('すべてのデータを削除しました');
-  } else if (modalAction==='delete-cat') {
+  } else if(modalAction==='delete-cat'){
     const catId=modalPayload;
     categories=categories.filter(c=>c.id!==catId);
-    ideas=ideas.map(i=>i.category===catId ? {...i, category: categories[0]?.id||'other'} : i);
+    ideas=ideas.map(i=>i.category===catId?{...i,category:categories[0]?.id||'other'}:i);
     saveCats(); saveIdeas(); closeModal(); renderSettings(); render(); showToast('カテゴリを削除しました');
   }
 }
-document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.getElementById('modal-overlay').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
 
 /* ===== FILTER ===== */
-function setFilter(f, el) {
+function setFilter(f,el){
   currentFilter=f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  render();
+  el.classList.add('active'); render();
 }
-function getFiltered() {
-  if (currentFilter==='active') return ideas.filter(i=>!i.done);
-  if (currentFilter==='done') return ideas.filter(i=>i.done);
+function getFiltered(){
+  if(currentFilter==='active') return ideas.filter(i=>!i.done);
+  if(currentFilter==='done')   return ideas.filter(i=>i.done);
   return ideas;
 }
 
-/* ===== CATEGORY SELECT OPTIONS ===== */
-function buildCatOptions(selectedId) {
+/* ===== CATEGORY SELECTS ===== */
+function buildCatOptions(selectedId){
   return categories.map(c=>`<option value="${escHtml(c.id)}"${c.id===selectedId?' selected':''}>${escHtml(c.name)}</option>`).join('');
 }
-function refreshCatSelects() {
-  const sel = document.getElementById('input-category');
-  if (sel) { const cur=sel.value; sel.innerHTML=buildCatOptions(cur||categories[0]?.id); }
+function refreshCatSelects(){
+  const sel=document.getElementById('input-category');
+  if(sel){ const cur=sel.value; sel.innerHTML=buildCatOptions(cur||categories[0]?.id); }
 }
 
 /* ===== RENDER IDEAS ===== */
-function render() {
+function render(){
   const total=ideas.length, done=ideas.filter(i=>i.done).length;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-done').textContent=done;
   const bulkBtn=document.getElementById('bulk-delete-btn');
-  if (bulkBtn) bulkBtn.style.display=done>0?'flex':'none';
-
+  if(bulkBtn) bulkBtn.style.display=done>0?'flex':'none';
   refreshCatSelects();
 
   const filtered=getFiltered();
   const list=document.getElementById('card-list');
   const empty=document.getElementById('empty-state');
-  if (filtered.length===0) {
+  if(!filtered.length){
     list.innerHTML=''; empty.style.display='';
-    if (currentFilter==='done') empty.innerHTML='<div class="empty-icon">✓</div><p>完了済みの企画はありません。</p>';
-    else if (currentFilter==='active') empty.innerHTML='<div class="empty-icon">🎉</div><p>未完了の企画はありません！<br>お疲れ様でした。</p>';
+    if(currentFilter==='done')   empty.innerHTML='<div class="empty-icon">✓</div><p>完了済みの企画はありません。</p>';
+    else if(currentFilter==='active') empty.innerHTML='<div class="empty-icon">🎉</div><p>未完了の企画はありません！</p>';
     else empty.innerHTML='<div class="empty-icon">📋</div><p>企画がありません。<br>上のフォームから登録してみましょう！</p>';
     return;
   }
   empty.style.display='none';
 
+  const calSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+
   list.innerHTML=filtered.map(idea=>{
-    if (editingId===idea.id) return `
+    const status=scheduleStatus(idea.schedule);
+    if(editingId===idea.id) return `
     <div class="card" id="card-${escHtml(idea.id)}">
       <button class="check-btn ${idea.done?'checked':''}" onclick="toggleDone('${escHtml(idea.id)}')" aria-label="完了切り替え">
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6.5 5,9.5 10,3"/></svg>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2,6.5 5,9.5 10,3"/></svg>
       </button>
       <div class="edit-form">
         <input type="text" id="edit-title-${escHtml(idea.id)}" value="${escHtml(idea.title)}" maxlength="100" placeholder="タイトル">
-        <textarea id="edit-memo-${escHtml(idea.id)}" maxlength="500" placeholder="メモ（任意）">${escHtml(idea.memo)}</textarea>
+        <textarea id="edit-memo-${escHtml(idea.id)}" maxlength="500" placeholder="メモ（任意）">${escHtml(idea.memo||'')}</textarea>
         <div class="sub-row">
           <select id="edit-cat-${escHtml(idea.id)}" style="width:auto;min-width:120px">${buildCatOptions(idea.category)}</select>
+          <div class="date-field-wrap" style="flex:1;min-width:160px">
+            <span class="date-field-label">📅</span>
+            <input type="date" id="edit-schedule-${escHtml(idea.id)}" value="${escHtml(idea.schedule||'')}">
+            <button class="date-clear-btn" onclick="clearSchedule('edit-schedule-${escHtml(idea.id)}')" title="クリア">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="sub-row" style="justify-content:flex-end">
           <button class="btn btn-primary btn-sm" onclick="saveEdit('${escHtml(idea.id)}')">保存</button>
           <button class="btn btn-ghost btn-sm" onclick="cancelEdit()">キャンセル</button>
         </div>
       </div>
     </div>`;
 
+    const scheduleBadge = idea.schedule ? `
+      <div class="card-schedule ${status==='overdue'?'overdue':status==='today'?'today':''}">
+        ${calSVG} ${fmtSchedule(idea.schedule)}${status==='overdue'?' — 期限超過':status==='today'?' — 今日':''}
+      </div>` : '';
+
     return `
     <div class="card ${idea.done?'done':''}" id="card-${escHtml(idea.id)}">
       <button class="check-btn ${idea.done?'checked':''}" onclick="toggleDone('${escHtml(idea.id)}')" aria-label="完了切り替え">
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6.5 5,9.5 10,3"/></svg>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2,6.5 5,9.5 10,3"/></svg>
       </button>
       <div class="card-body">
         <div class="card-meta">
           <span class="tag">${escHtml(getCatName(idea.category))}</span>
-          <span class="card-date">${formatDate(idea.createdAt)}</span>
+          <span class="card-date">${fmtCreated(idea.createdAt)}</span>
         </div>
         <div class="card-title">${escHtml(idea.title)}</div>
         ${idea.memo?`<div class="card-memo">${escHtml(idea.memo)}</div>`:''}
+        ${scheduleBadge}
       </div>
       <div class="card-actions">
         <button class="card-icon-btn" onclick="startEdit('${escHtml(idea.id)}')" aria-label="編集">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button class="card-icon-btn delete" onclick="askDelete('${escHtml(idea.id)}')" aria-label="削除">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/>
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
       </div>
     </div>`;
   }).join('');
 }
 
-/* ===== RENDER SETTINGS ===== */
-function renderSettings() {
-  const list=document.getElementById('cat-list');
-  if (!list) return;
+/* ===== CALENDAR ===== */
+function calMove(delta){
+  calMonth+=delta;
+  if(calMonth<0){ calMonth=11; calYear--; }
+  if(calMonth>11){ calMonth=0; calYear++; }
+  renderCalendar();
+}
+function calGoToday(){
+  const now=new Date(); calYear=now.getFullYear(); calMonth=now.getMonth();
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const months=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('cal-month-label').textContent=`${calYear}年 ${months[calMonth]}`;
+
+  const today=new Date(); today.setHours(0,0,0,0);
+  const firstDay=new Date(calYear,calMonth,1).getDay(); // 0=Sun
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+
+  // Build date→ideas map
+  const dateMap={};
+  ideas.forEach(idea=>{
+    if(!idea.schedule) return;
+    const key=idea.schedule; // 'YYYY-MM-DD'
+    if(!dateMap[key]) dateMap[key]=[];
+    dateMap[key].push(idea);
+  });
+
+  let cells='';
+  const totalCells=Math.ceil((firstDay+daysInMonth)/7)*7;
+
+  for(let i=0;i<totalCells;i++){
+    let day, month=calMonth, year=calYear, otherMonth=false;
+    if(i<firstDay){ day=prevDays-firstDay+i+1; month=calMonth-1; if(month<0){month=11;year=calYear-1;} otherMonth=true; }
+    else if(i>=firstDay+daysInMonth){ day=i-firstDay-daysInMonth+1; month=calMonth+1; if(month>11){month=0;year=calYear+1;} otherMonth=true; }
+    else{ day=i-firstDay+1; }
+
+    const yyyy=year; const mm=String(month+1).padStart(2,'0'); const dd=String(day).padStart(2,'0');
+    const dateKey=`${yyyy}-${mm}-${dd}`;
+    const dayIdeas=dateMap[dateKey]||[];
+    const isToday=new Date(yyyy,month,day).getTime()===today.getTime();
+    const dow=i%7; // 0=Sun,6=Sat
+    const dowClass=dow===0?'sun':dow===6?'sat':'';
+    const hasIdea=dayIdeas.length>0;
+    const allDone=hasIdea&&dayIdeas.every(i=>i.done);
+    const hasOverdue=!allDone&&hasIdea&&new Date(yyyy,month,day)<today;
+
+    const dayNumHtml=isToday
+      ?`<div class="cal-day-num" style="background:var(--text);color:var(--bg);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center">${day}</div>`
+      :`<div class="cal-day-num">${day}</div>`;
+
+    const MAX_DOTS=3;
+    const dots=dayIdeas.slice(0,MAX_DOTS).map(idea=>{
+      const s=scheduleStatus(idea.schedule);
+      const cls=idea.done?'done-dot':s==='overdue'?'overdue-dot':'';
+      return `<div class="cal-dot ${cls}" onclick="event.stopPropagation();openCalModal('${dateKey}')" title="${escHtml(idea.title)}">${escHtml(idea.title)}</div>`;
+    }).join('');
+    const more=dayIdeas.length>MAX_DOTS?`<div class="cal-more">+${dayIdeas.length-MAX_DOTS}件</div>`:'';
+
+    cells+=`<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today-cell':''} ${dowClass} ${hasIdea?'has-idea':''} ${hasOverdue?'overdue-cell':''}"
+      ${hasIdea?`onclick="openCalModal('${dateKey}')"`:''}>
+      ${dayNumHtml}
+      <div class="cal-dot-list">${dots}${more}</div>
+    </div>`;
+  }
+  document.getElementById('cal-body').innerHTML=cells;
+}
+
+function openCalModal(dateKey){
+  const [y,m,d]=dateKey.split('-').map(Number);
+  const label=`${y}年${m}月${d}日`;
+  const dayIdeas=ideas.filter(i=>i.schedule===dateKey);
+  if(!dayIdeas.length) return;
+
+  const itemsHtml=dayIdeas.map(idea=>`
+    <div class="cal-modal-item ${idea.done?'done-item':''}">
+      <button class="check-btn ${idea.done?'checked':''} cal-modal-check" onclick="toggleDone('${escHtml(idea.id)}')" aria-label="完了切り替え">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2,6.5 5,9.5 10,3"/></svg>
+      </button>
+      <div class="cal-modal-body">
+        <div class="cal-modal-title">${escHtml(idea.title)}</div>
+        <span class="cal-modal-tag">${escHtml(getCatName(idea.category))}</span>
+        ${idea.memo?`<div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.5">${escHtml(idea.memo)}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  openInfoModal(label, `<div class="cal-modal-date">${dayIdeas.length}件の企画</div><div class="cal-modal-list">${itemsHtml}</div>`);
+}
+
+/* ===== SETTINGS ===== */
+function renderSettings(){
+  applyTheme(localStorage.getItem(THEME_KEY)||'light',false);
+  const list=document.getElementById('cat-list'); if(!list) return;
   list.innerHTML=categories.map(cat=>{
     const count=ideas.filter(i=>i.category===cat.id).length;
-    return `
-    <div class="cat-item" id="catitem-${escHtml(cat.id)}">
+    return `<div class="cat-item" id="catitem-${escHtml(cat.id)}">
       <div class="cat-item-name" id="catname-${escHtml(cat.id)}">${escHtml(cat.name)}</div>
       <div class="cat-item-count">${count}件</div>
       <div class="cat-item-actions">
-        <button class="cat-action-btn" onclick="startEditCat('${escHtml(cat.id)}')" aria-label="カテゴリ名を編集">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
+        <button class="cat-action-btn" onclick="startEditCat('${escHtml(cat.id)}')" aria-label="編集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        ${categories.length>1 ? `
-        <button class="cat-action-btn delete" onclick="askDeleteCat('${escHtml(cat.id)}')" aria-label="カテゴリを削除">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/>
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-          </svg>
-        </button>` : '<div style="width:26px"></div>'}
+        ${categories.length>1?`<button class="cat-action-btn delete" onclick="askDeleteCat('${escHtml(cat.id)}')" aria-label="削除">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>`:'<div style="width:26px"></div>'}
       </div>
     </div>`;
   }).join('');
 }
-
-function startEditCat(id) {
+function startEditCat(id){
   const nameEl=document.getElementById('catname-'+id);
-  const item=document.getElementById('catitem-'+id);
-  if (!nameEl||!item) return;
+  const item=document.getElementById('catitem-'+id); if(!nameEl||!item) return;
   const cat=categories.find(c=>c.id===id); if(!cat) return;
   const actions=item.querySelector('.cat-item-actions');
-  nameEl.innerHTML=`<input type="text" id="catedit-${escHtml(id)}" value="${escHtml(cat.name)}" maxlength="20" style="width:100%;font-size:13px;padding:4px 8px;" autocomplete="off">`;
+  nameEl.innerHTML=`<input type="text" id="catedit-${escHtml(id)}" value="${escHtml(cat.name)}" maxlength="20" style="width:100%;font-size:13px;padding:4px 8px" autocomplete="off">`;
   actions.innerHTML=`
-    <button class="cat-action-btn" onclick="saveEditCat('${escHtml(id)}')" aria-label="保存" title="保存">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    </button>
-    <button class="cat-action-btn" onclick="renderSettings()" aria-label="キャンセル" title="キャンセル">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>`;
+    <button class="cat-action-btn" onclick="saveEditCat('${escHtml(id)}')" title="保存"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+    <button class="cat-action-btn" onclick="renderSettings()" title="キャンセル"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
   const inp=document.getElementById('catedit-'+id);
   if(inp){ inp.focus(); inp.select();
     inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();saveEditCat(id);} if(e.key==='Escape') renderSettings(); });
   }
 }
-function saveEditCat(id) {
+function saveEditCat(id){
   const inp=document.getElementById('catedit-'+id); if(!inp) return;
   const newName=inp.value.trim();
-  if (!newName) { showToast('カテゴリ名を入力してください'); inp.focus(); return; }
+  if(!newName){ showToast('カテゴリ名を入力してください'); inp.focus(); return; }
   const cat=categories.find(c=>c.id===id); if(!cat) return;
   cat.name=newName; saveCats(); renderSettings(); render(); showToast('カテゴリ名を変更しました');
 }
-function askDeleteCat(id) {
+function askDeleteCat(id){
   const cat=categories.find(c=>c.id===id); if(!cat) return;
   const count=ideas.filter(i=>i.category===id).length;
   const fallback=categories.find(c=>c.id!==id);
   const msg=count>0
-    ? `カテゴリ「<span class="modal-target">${escHtml(cat.name)}</span>」を削除します。このカテゴリの企画 ${count}件 は「${escHtml(fallback?.name||'')}」に移動されます。`
-    : `カテゴリ「<span class="modal-target">${escHtml(cat.name)}</span>」を削除します。`;
-  openModal('カテゴリを削除しますか？', msg, 'delete-cat', id, '削除する');
+    ?`カテゴリ「<span class="modal-target">${escHtml(cat.name)}</span>」を削除します。このカテゴリの企画 ${count}件 は「${escHtml(fallback?.name||'')}」に移動されます。`
+    :`カテゴリ「<span class="modal-target">${escHtml(cat.name)}</span>」を削除します。`;
+  openModal('カテゴリを削除しますか？',msg,'delete-cat',id,'削除する');
 }
-function addCategory() {
+function addCategory(){
   const inp=document.getElementById('new-cat-input'); if(!inp) return;
   const name=inp.value.trim();
-  if (!name) { showToast('カテゴリ名を入力してください'); inp.focus(); return; }
-  if (categories.some(c=>c.name===name)) { showToast('同じ名前のカテゴリがすでにあります'); inp.focus(); return; }
-  const id='cat_'+genId();
-  categories.push({id, name});
+  if(!name){ showToast('カテゴリ名を入力してください'); inp.focus(); return; }
+  if(categories.some(c=>c.name===name)){ showToast('同じ名前のカテゴリがすでにあります'); inp.focus(); return; }
+  categories.push({id:'cat_'+genId(),name});
   saveCats(); inp.value=''; renderSettings(); refreshCatSelects(); showToast('カテゴリを追加しました');
+}
+
+/* ===== EXPORT ===== */
+function downloadFile(filename,content,mimeType){
+  const blob=new Blob([content],{type:mimeType});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },500);
+}
+function nowStamp(){
+  const d=new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function exportIdeas(fmt){
+  if(!ideas.length){ showToast('エクスポートする企画がありません'); return; }
+  if(fmt==='json'){
+    const data=ideas.map(i=>({
+      id:i.id, title:i.title, memo:i.memo||'',
+      category:getCatName(i.category), categoryId:i.category,
+      schedule:i.schedule||'', done:i.done,
+      createdAt:new Date(i.createdAt).toISOString()
+    }));
+    downloadFile(
+      `kikakunote_ideas_${nowStamp()}.json`,
+      JSON.stringify({exportedAt:new Date().toISOString(),count:data.length,ideas:data},null,2),
+      'application/json'
+    );
+    showToast(`${data.length}件の企画をJSONでエクスポートしました`);
+  } else if(fmt==='csv'){
+    const header=['ID','タイトル','メモ','カテゴリ','実施日','完了','登録日時'];
+    const rows=ideas.map(i=>[
+      i.id,
+      `"${(i.title||'').replace(/"/g,'""')}"`,
+      `"${(i.memo||'').replace(/"/g,'""').replace(/\n/g,'↵')}"`,
+      `"${getCatName(i.category)}"`,
+      i.schedule||'',
+      i.done?'完了':'未完了',
+      new Date(i.createdAt).toLocaleString('ja-JP')
+    ].join(','));
+    const csv='\uFEFF'+[header.join(','),...rows].join('\r\n');
+    downloadFile(`kikakunote_ideas_${nowStamp()}.csv`,csv,'text/csv;charset=utf-8');
+    showToast(`${ideas.length}件の企画をCSVでエクスポートしました`);
+  }
+}
+
+function exportSettings(){
+  const data={
+    exportedAt:new Date().toISOString(),
+    theme:localStorage.getItem(THEME_KEY)||'light',
+    categories:categories.map(c=>({id:c.id,name:c.name}))
+  };
+  downloadFile(
+    `kikakunote_settings_${nowStamp()}.json`,
+    JSON.stringify(data,null,2),
+    'application/json'
+  );
+  showToast('設定データをエクスポートしました');
 }
 
 /* ===== TOAST ===== */
 let toastTimer=null;
-function showToast(msg) {
+function showToast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
 }
 
 /* ===== KEYBOARD ===== */
-// メモ欄のEnterは改行のみ（タイトル欄はEnterキー登録しない → ボタンのみで登録）
-document.getElementById('new-cat-input').addEventListener('keydown', e=>{
+document.getElementById('new-cat-input').addEventListener('keydown',e=>{
   if(e.key==='Enter'){ e.preventDefault(); addCategory(); }
 });
 
 /* ===== INIT ===== */
 load();
 render();
+
+/* ===== PWA: Service Worker ===== */
+let swReg=null, deferredPrompt=null, newWorker=null;
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      swReg=reg;
+      reg.addEventListener('updatefound',()=>{
+        newWorker=reg.installing;
+        newWorker.addEventListener('statechange',()=>{
+          if(newWorker.state==='installed'&&navigator.serviceWorker.controller)
+            document.getElementById('update-banner').classList.add('show');
+        });
+      });
+    }).catch(e=>console.warn('SW:',e));
+    navigator.serviceWorker.addEventListener('controllerchange',()=>window.location.reload());
+  });
+}
+function applyUpdate(){ if(newWorker) newWorker.postMessage({action:'skipWaiting'}); }
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  if(!sessionStorage.getItem('install-dismissed'))
+    document.getElementById('install-banner').classList.remove('hidden');
+});
+function triggerInstall(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; document.getElementById('install-banner').classList.add('hidden'); });
+}
+function dismissInstall(){
+  sessionStorage.setItem('install-dismissed','1');
+  document.getElementById('install-banner').classList.add('hidden');
+}
+window.addEventListener('appinstalled',()=>{ document.getElementById('install-banner').classList.add('hidden'); showToast('ホーム画面に追加しました！'); });
+function updateOnlineStatus(){ document.getElementById('offline-bar').classList.toggle('show',!navigator.onLine); }
+window.addEventListener('online',updateOnlineStatus);
+window.addEventListener('offline',updateOnlineStatus);
+updateOnlineStatus();
+function syncThemeColor(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.remove());
+  const meta=document.createElement('meta');
+  meta.name='theme-color'; meta.content=isDark?'#141413':'#ffffff';
+  document.head.appendChild(meta);
+}
+
+/* ===== IMPORT ===== */
+/* ===== IMPORT ===== */
+let importMode  = 'merge';       // 'merge' | 'replace'
+let parsedIdeas = null;          // staging area for ideas
+let parsedSettings = null;       // staging area for settings
+
+// Tab switch
+function switchImportTab(tab, btn) {
+  document.querySelectorAll('.import-type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.import-panels > div').forEach(p=>p.classList.remove('active'));
+  document.getElementById('import-panel-'+tab).classList.add('active');
+  resetImport(tab);
+}
+
+// Mode radio
+function selectImportMode(mode, label) {
+  importMode = mode;
+  document.querySelectorAll('.radio-pill').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+  if(parsedIdeas) buildIdeasPreview(parsedIdeas); // refresh badge
+}
+
+// Drag-and-drop helpers
+function dzOver(e, zone){ e.preventDefault(); document.getElementById('drop-zone-'+zone).classList.add('drag-over'); }
+function dzLeave(zone){ document.getElementById('drop-zone-'+zone).classList.remove('drag-over'); }
+function dzDrop(e, zone){
+  e.preventDefault(); dzLeave(zone);
+  const file = e.dataTransfer.files[0]; if(file) processFile(file, zone);
+}
+function handleFileSelect(e, zone){
+  const file = e.target.files[0]; if(file) processFile(file, zone);
+}
+
+// Core file reader
+function processFile(file, zone){
+  resetImport(zone);
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      if(zone === 'ideas'){
+        let rows;
+        if(ext === 'json')     rows = parseIdeasJSON(ev.target.result);
+        else if(ext === 'csv') rows = parseIdeasCSV(ev.target.result);
+        else throw new Error('対応していない形式です（JSON または CSV を選択してください）');
+        if(!rows.length) throw new Error('有効な企画データが見つかりませんでした');
+        parsedIdeas = rows;
+        buildIdeasPreview(rows);
+      } else {
+        const cfg = parseSettingsJSON(ev.target.result);
+        parsedSettings = cfg;
+        buildSettingsPreview(cfg);
+      }
+    } catch(err){
+      showImportError(zone, err.message);
+    }
+  };
+  reader.onerror = () => showImportError(zone, 'ファイルの読み込みに失敗しました');
+  reader.readAsText(file, 'UTF-8');
+}
+
+/* -- Parsers -- */
+function parseIdeasJSON(text){
+  const raw = JSON.parse(text);
+  // Two formats: {ideas:[...]} wrapper  OR  bare array
+  const arr = Array.isArray(raw) ? raw : (raw.ideas || []);
+  if(!Array.isArray(arr)) throw new Error('JSONの形式が正しくありません');
+  return arr.map(r => normalizeIdeaRow(r)).filter(r => r.title);
+}
+
+function normalizeIdeaRow(r){
+  // Accept both app's own export format and hand-written JSON
+  const title = String(r.title||'').trim();
+  const memo  = String(r.memo||'').trim();
+  // category: prefer categoryId; fall back to matching by name
+  let catId = r.categoryId || r.category_id || null;
+  if(!catId){
+    const name = String(r.category||'');
+    const found = categories.find(c => c.name === name);
+    catId = found ? found.id : (categories[0]?.id || 'other');
+  } else {
+    // validate catId exists, else try name match
+    if(!categories.find(c => c.id === catId)){
+      const name = String(r.category||'');
+      const found = categories.find(c => c.name === name);
+      catId = found ? found.id : (categories[0]?.id || 'other');
+    }
+  }
+  const schedule = /^\d{4}-\d{2}-\d{2}$/.test(r.schedule||'') ? r.schedule : '';
+  const done     = r.done === true || r.done === 'true' || r.done === '完了';
+  const createdAt= r.createdAt ? (new Date(r.createdAt).getTime()||Date.now()) : Date.now();
+  const id       = r.id || genId();
+  return { id, title, memo, category:catId, schedule, done, createdAt };
+}
+
+function parseIdeasCSV(text){
+  // Strip BOM
+  const clean = text.replace(/^\uFEFF/, '');
+  const lines  = clean.split(/\r?\n/).filter(l => l.trim());
+  if(lines.length < 2) throw new Error('CSVに有効なデータ行がありません');
+  // Header detection (skip if first row looks like header)
+  const headerLine = lines[0].toLowerCase();
+  const isHeader   = headerLine.includes('タイトル') || headerLine.includes('title');
+  const dataLines  = isHeader ? lines.slice(1) : lines;
+
+  return dataLines.map(line => {
+    // Simple CSV split (handles quoted fields)
+    const cols = csvSplitLine(line);
+    // Our export column order: ID, タイトル, メモ, カテゴリ, 実施日, 完了, 登録日時
+    // But also try to handle simpler 1-column title-only rows
+    if(cols.length >= 7){
+      const [id, title, memo, catName, schedule, doneStr, createdStr] = cols;
+      const found = categories.find(c => c.name === catName.trim());
+      const catId = found ? found.id : (categories[0]?.id||'other');
+      return {
+        id: id.trim() || genId(),
+        title: title.trim(), memo: memo.replace(/↵/g,'\n').trim(),
+        category: catId,
+        schedule: /^\d{4}-\d{2}-\d{2}$/.test(schedule.trim()) ? schedule.trim() : '',
+        done: doneStr.trim() === '完了',
+        createdAt: new Date(createdStr.trim()).getTime() || Date.now()
+      };
+    } else {
+      // Minimal: treat first col as title
+      return { id:genId(), title:cols[0]?.trim()||'', memo:'', category:categories[0]?.id||'other', schedule:'', done:false, createdAt:Date.now() };
+    }
+  }).filter(r => r.title);
+}
+
+function csvSplitLine(line){
+  const result=[]; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){ if(inQ&&line[i+1]==='"'){cur+='"';i++;} else inQ=!inQ; }
+    else if(ch===','&&!inQ){ result.push(cur); cur=''; }
+    else cur+=ch;
+  }
+  result.push(cur);
+  return result;
+}
+
+function parseSettingsJSON(text){
+  const raw = JSON.parse(text);
+  // Validate it looks like a settings export
+  if(!raw.categories && !raw.theme) throw new Error('設定ファイルの形式が正しくありません');
+  return {
+    theme:      raw.theme || null,
+    categories: Array.isArray(raw.categories) ? raw.categories.filter(c=>c.name) : null
+  };
+}
+
+/* -- Preview builders -- */
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildIdeasPreview(rows){
+  const existingIds = new Set(ideas.map(i => i.id));
+  let newCount=0, skipCount=0;
+
+  const tbody = rows.slice(0, 50).map(r => {
+    const isExisting = importMode === 'merge' && existingIds.has(r.id);
+    if(isExisting) skipCount++; else newCount++;
+    const badge = isExisting
+      ? '<span class="badge-skip">スキップ</span>'
+      : '<span class="badge-new">新規</span>';
+    const doneBadge = r.done ? '<span class="badge-done">完了</span>' : '';
+    return `<tr>
+      <td class="col-title">${escH(r.title)}</td>
+      <td>${escH(getCatName(r.category))}</td>
+      <td class="col-sched">${escH(r.schedule||'—')}</td>
+      <td class="col-done">${doneBadge}</td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('');
+
+  if(importMode === 'replace') { newCount = rows.length; skipCount = 0; }
+
+  const more = rows.length > 50 ? `（+${rows.length-50}件は省略）` : '';
+  const warnHtml = importMode === 'replace' && ideas.length
+    ? `<span class="warn">⚠ 既存 ${ideas.length}件 が削除されます</span>` : '';
+
+  document.getElementById('import-count-label').innerHTML =
+    `${rows.length}件${more} — 新規<strong>${importMode==='replace'?rows.length:newCount}</strong>件 ${warnHtml}`;
+  document.getElementById('import-preview-tbody').innerHTML = tbody;
+  document.getElementById('import-preview-ideas').style.display = '';
+  document.getElementById('import-summary-ideas').textContent = '';
+  document.getElementById('import-error-ideas').style.display = 'none';
+}
+
+function buildSettingsPreview(cfg){
+  const catHtml = cfg.categories
+    ? cfg.categories.map(c=>`<span class="cat-chip">${escH(c.name)}</span>`).join('')
+    : '（変更なし）';
+  const themeHtml = cfg.theme
+    ? (cfg.theme === 'dark' ? '🌙 ダークモード' : '☀️ ライトモード')
+    : '（変更なし）';
+
+  document.getElementById('settings-preview-content').innerHTML = `
+    <div class="sip-row"><span class="sip-label">テーマ</span><span class="sip-value">${themeHtml}</span></div>
+    <div class="sip-row"><span class="sip-label">カテゴリ</span><span class="sip-value">${catHtml}</span></div>
+  `;
+  document.getElementById('import-preview-settings').style.display = '';
+  document.getElementById('import-error-settings').style.display = 'none';
+}
+
+/* -- Execute -- */
+function executeImportIdeas(){
+  if(!parsedIdeas) return;
+  const existingIds = new Set(ideas.map(i => i.id));
+
+  if(importMode === 'replace'){
+    ideas = parsedIdeas.map(r=>({...r, id: r.id||genId()}));
+  } else {
+    const newRows = parsedIdeas.filter(r => !existingIds.has(r.id));
+    ideas = [...newRows, ...ideas];
+  }
+  saveIdeas(); render();
+  const msg = importMode === 'replace'
+    ? `${ideas.length}件の企画を上書きインポートしました`
+    : `${parsedIdeas.filter(r=>!existingIds.has(r.id)).length}件の企画を追加しました`;
+  showToast(msg);
+  document.getElementById('import-summary-ideas').textContent = '✓ ' + msg;
+  parsedIdeas = null;
+  // Reset file input so same file can be re-selected
+  document.getElementById('file-input-ideas').value = '';
+}
+
+function executeImportSettings(){
+  if(!parsedSettings) return;
+  let changed = [];
+  if(parsedSettings.theme){
+    applyTheme(parsedSettings.theme);
+    changed.push('テーマ');
+  }
+  if(parsedSettings.categories && parsedSettings.categories.length){
+    // Merge: keep existing cats not in import, add new ones
+    const importedNames = new Set(parsedSettings.categories.map(c=>c.name));
+    const kept = categories.filter(c => !importedNames.has(c.name));
+    const added = parsedSettings.categories.map(c => ({
+      id: categories.find(x=>x.name===c.name)?.id || ('cat_'+genId()),
+      name: c.name
+    }));
+    categories = [...added, ...kept.filter(c=>!added.find(a=>a.id===c.id))];
+    saveCats(); renderSettings(); refreshCatSelects();
+    changed.push('カテゴリ');
+  }
+  showToast('設定をインポートしました（' + changed.join('・') + '）');
+  parsedSettings = null;
+  document.getElementById('file-input-settings').value = '';
+  resetImport('settings');
+}
+
+function resetImport(zone){
+  parsedIdeas = parsedSettings = null;
+  if(zone==='ideas'){
+    document.getElementById('import-preview-ideas').style.display='none';
+    document.getElementById('import-error-ideas').style.display='none';
+    document.getElementById('import-summary-ideas').textContent='';
+    document.getElementById('file-input-ideas').value='';
+  } else {
+    document.getElementById('import-preview-settings').style.display='none';
+    document.getElementById('import-error-settings').style.display='none';
+    document.getElementById('file-input-settings').value='';
+  }
+}
+
+function showImportError(zone, msg){
+  const el = document.getElementById('import-error-'+zone); if(!el) return;
+  el.textContent = '⚠ ' + msg;
+  el.style.display = '';
+}
+
+/* ===== ABOUT PAGE ===== */
+function renderAbout(){
+  // Stats
+  const total    = ideas.length;
+  const done     = ideas.filter(i=>i.done).length;
+  const active   = total - done;
+  const scheduled= ideas.filter(i=>i.schedule).length;
+  const catCount = categories.length;
+  function setEl(id,val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  setEl('about-total-ideas',   total + ' 件');
+  setEl('about-done-ideas',    done  + ' 件');
+  setEl('about-active-ideas',  active+ ' 件');
+  setEl('about-cat-count',     catCount + ' 個');
+  setEl('about-scheduled-count', scheduled + ' 件');
+
+  // Storage size
+  try {
+    const ideasBytes    = new Blob([localStorage.getItem('kikakunote_v2')||'']).size;
+    const catBytes      = new Blob([localStorage.getItem('kikakunote_cats_v2')||'']).size;
+    const totalBytes    = ideasBytes + catBytes;
+    const kb = (totalBytes/1024).toFixed(1);
+    const pct= Math.min(100, Math.round(totalBytes / (5*1024*1024) * 100)); // vs 5MB
+    setEl('about-storage-size', kb + ' KB');
+    const fill = document.getElementById('about-storage-fill');
+    if(fill) setTimeout(()=>fill.style.width=pct+'%', 80);
+  } catch(e){ setEl('about-storage-size','—'); }
+
+  // SW status
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistration('./sw.js').then(reg=>{
+      const el=document.getElementById('about-sw-status');
+      if(!el) return;
+      if(reg && reg.active)       el.textContent='✓ 有効（オフライン対応中）';
+      else if(reg && reg.installing) el.textContent='インストール中…';
+      else                        el.textContent='未登録';
+    }).catch(()=>setEl('about-sw-status','—'));
+  } else {
+    setEl('about-sw-status','非対応ブラウザ');
+  }
+
+  // Install status
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+  setEl('about-install-status', isStandalone ? '✓ インストール済み（アプリとして起動中）' : 'ブラウザで実行中');
+}
+
+function checkForUpdate(){
+  if(!('serviceWorker' in navigator)){ showToast('Service Worker非対応のブラウザです'); return; }
+  showToast('アップデートを確認しています…');
+  navigator.serviceWorker.getRegistration('./sw.js').then(reg=>{
+    if(!reg){ showToast('Service Workerが登録されていません'); return; }
+    reg.update().then(()=>{
+      const nw = reg.installing || reg.waiting;
+      if(nw){
+        showToast('新しいバージョンが見つかりました！');
+        document.getElementById('update-banner').classList.add('show');
+      } else {
+        showToast('最新バージョンを使用しています ✓');
+      }
+    });
+  }).catch(()=>showToast('確認に失敗しました'));
+}
+
 </script>
 </body>
 </html>
