@@ -457,6 +457,83 @@ table.preview-table {
   .about-feature-grid { grid-template-columns:1fr; }
   .about-hero { padding:28px 16px 24px; }
 }
+
+/* ===== UPDATE PAGE ===== */
+.update-page { display:flex; flex-direction:column; gap:20px; max-width:640px; margin:0 auto; }
+.update-page-header { margin-bottom:4px; }
+.update-page-header h1 { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; margin-bottom:6px; }
+.update-page-header p  { font-size:13px; color:var(--text-muted); line-height:1.6; }
+.update-current-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 16px; border-radius:var(--radius);
+  background:var(--surface); border:1px solid var(--border);
+  font-family:'Space Mono',monospace; font-size:12px; color:var(--text-muted);
+  margin-top:10px; transition:background var(--tr),border-color var(--tr);
+}
+.update-current-badge .cur-dot { width:8px; height:8px; border-radius:50%; background:var(--accent-green); flex-shrink:0; }
+.release-list { display:flex; flex-direction:column; gap:0; }
+.release-item {
+  display:flex; gap:0; position:relative;
+}
+.release-timeline {
+  display:flex; flex-direction:column; align-items:center;
+  width:36px; flex-shrink:0; padding-top:2px;
+}
+.release-dot {
+  width:12px; height:12px; border-radius:50%; border:2px solid var(--border);
+  background:var(--bg); flex-shrink:0; position:relative; z-index:1;
+  transition:background var(--tr),border-color var(--tr);
+}
+.release-dot.latest { background:var(--text); border-color:var(--text); }
+.release-dot.minor  { background:var(--bg); border-color:var(--border-strong); }
+.release-line {
+  width:2px; background:var(--border); flex:1; margin-top:2px;
+  transition:background var(--tr);
+}
+.release-item:last-child .release-line { display:none; }
+.release-body {
+  flex:1; padding:0 0 28px 14px;
+}
+.release-item:last-child .release-body { padding-bottom:0; }
+.release-header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.release-version {
+  font-family:'Space Mono',monospace; font-size:15px; font-weight:700;
+}
+.release-badge {
+  font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px;
+}
+.badge-latest  { background:var(--text); color:var(--bg); }
+.badge-feature { background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); }
+.badge-fix     { background:#edf7f0; color:var(--accent-green); border:1px solid #b3e6c8; }
+[data-theme="dark"] .badge-fix { background:#0d2a18; border-color:#1a5a30; }
+.release-date { font-family:'Space Mono',monospace; font-size:11px; color:var(--text-faint); margin-left:auto; }
+.release-summary { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:10px; }
+.release-changes { display:flex; flex-direction:column; gap:4px; }
+.change-item {
+  display:flex; align-items:flex-start; gap:9px;
+  font-size:13px; line-height:1.5; padding:7px 12px;
+  background:var(--surface); border-radius:var(--radius);
+  border:1px solid var(--border);
+  transition:background var(--tr),border-color var(--tr);
+}
+.change-icon {
+  width:20px; height:20px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; flex-shrink:0; margin-top:0px;
+}
+.change-icon.new  { background:#111110; color:#fff; }
+[data-theme="dark"] .change-icon.new { background:#f0ede8; color:#111110; }
+.change-icon.fix  { background:#edf7f0; }
+[data-theme="dark"] .change-icon.fix { background:#0d2a18; }
+.change-icon.improve { background:var(--surface2); }
+.change-label { flex:1; }
+.change-label strong { font-weight:700; }
+.change-type-tag {
+  font-size:9px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
+  padding:1px 5px; border-radius:3px; flex-shrink:0; margin-top:2px;
+  background:var(--surface2); color:var(--text-faint);
+}
 </style>
 </head>
 <body>
@@ -478,7 +555,8 @@ table.preview-table {
   <button class="nav-tab active" id="tab-ideas"    onclick="showPage('ideas')">企画リスト</button>
   <button class="nav-tab"        id="tab-calendar" onclick="showPage('calendar')">カレンダー</button>
   <button class="nav-tab"        id="tab-settings" onclick="showPage('settings')">設定</button>
-  <button class="nav-tab"        id="tab-about"    onclick="showPage('about')">アプリ情報</button>
+  <button class="nav-tab"        id="tab-about"    onclick="showPage('about')">このアプリ</button>
+  <button class="nav-tab"        id="tab-updates"  onclick="showPage('updates')">アップデート</button>
 </nav>
 
 <main>
@@ -898,14 +976,14 @@ table.preview-table {
 
     <!-- 開発元 -->
     <div class="about-section">
-      <div class="about-section-title">開発</div>
+      <div class="about-section-title">開発元</div>
       <div class="about-row">
-        <span class="about-row-label">開発者</span>
-        <span class="about-row-value">カエルム</span>
+        <span class="about-row-label">開発元</span>
+        <span class="about-row-value">企画ノート開発チーム</span>
       </div>
       <div class="about-row">
         <span class="about-row-label">データ保存</span>
-        <span class="about-row-value">デバイスのローカルストレージのみ</span>
+        <span class="about-row-value">端末内ローカルのみ</span>
       </div>
       <div class="about-row">
         <span class="about-row-label">外部通信</span>
@@ -914,10 +992,224 @@ table.preview-table {
     </div>
 
     <div class="about-copyright">
-      © 2025 企画ノート<br>
+      © 2025 企画ノート開発チーム<br>
       Built with HTML / CSS / JavaScript
     </div>
 
+  </div>
+</div>
+
+<!-- ===== UPDATE PAGE ===== -->
+<div class="page" id="page-updates">
+  <div class="update-page">
+
+    <div class="update-page-header">
+      <h1>アップデート情報</h1>
+      <p>企画ノートのバージョン履歴と変更点の一覧です。</p>
+      <div class="update-current-badge">
+        <span class="cur-dot"></span>
+        現在のバージョン：1.0.0
+      </div>
+    </div>
+
+    <div class="release-list">
+
+      <!-- v1.0.0 -->
+      <div class="release-item">
+        <div class="release-timeline">
+          <div class="release-dot latest"></div>
+          <div class="release-line"></div>
+        </div>
+        <div class="release-body">
+          <div class="release-header">
+            <span class="release-version">v1.0.0</span>
+            <span class="release-badge badge-latest">最新</span>
+            <span class="release-date">2025-05-27</span>
+          </div>
+          <div class="release-summary">
+            企画ノートの正式リリース版です。YouTuberが日々の動画企画を手早く記録・管理できるよう設計されたアプリの初回リリースです。
+          </div>
+          <div class="release-changes">
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>企画リスト</strong> — タイトル・メモ・カテゴリ・実施日を登録し一覧管理</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>カレンダー表示</strong> — 実施日をカレンダーで一覧・クリックで詳細確認</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>エクスポート</strong> — 企画データをJSON・CSV形式で個別出力</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>インポート</strong> — JSON・CSVからの企画取り込みとプレビュー確認機能</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>カスタムカテゴリ</strong> — カテゴリの追加・編集・削除に対応</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>ダークモード</strong> — ライト・ダーク切り替えに対応</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>PWA対応</strong> — ホーム画面追加・オフライン動作・Service Worker実装</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>このアプリ画面</strong> — バージョン・統計・機能一覧ページを実装</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>アップデート情報画面</strong> — バージョン履歴・変更内容の閲覧ページを実装</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- v0.9.0 (beta) -->
+      <div class="release-item">
+        <div class="release-timeline">
+          <div class="release-dot minor"></div>
+          <div class="release-line"></div>
+        </div>
+        <div class="release-body">
+          <div class="release-header">
+            <span class="release-version">v0.9.0</span>
+            <span class="release-badge badge-feature">ベータ</span>
+            <span class="release-date">2025-05-26</span>
+          </div>
+          <div class="release-summary">
+            インポート・エクスポート機能とカレンダー機能を追加したベータ版です。
+          </div>
+          <div class="release-changes">
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>エクスポート機能</strong> — 企画データと設定データの個別エクスポートに対応</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>インポート機能</strong> — ドラッグ&ドロップ対応・プレビュー確認付きインポート</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>カレンダー</strong> — 実施日の登録とカレンダー表示機能</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon fix">🔧</div>
+              <div class="change-label"><strong>CSS/JSの混在バグ修正</strong> — スタイルとスクリプトが混入していた問題を解消</div>
+              <span class="change-type-tag">修正</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- v0.8.0 (beta) -->
+      <div class="release-item">
+        <div class="release-timeline">
+          <div class="release-dot minor"></div>
+          <div class="release-line"></div>
+        </div>
+        <div class="release-body">
+          <div class="release-header">
+            <span class="release-version">v0.8.0</span>
+            <span class="release-badge badge-feature">ベータ</span>
+            <span class="release-date">2025-05-26</span>
+          </div>
+          <div class="release-summary">
+            PWA化・設定画面・ダークモード・カスタムカテゴリを実装したベータ版です。
+          </div>
+          <div class="release-changes">
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>PWA化</strong> — Service Worker・manifest・アイコン生成・オフライン対応</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>設定画面</strong> — カテゴリ管理・テーマ・データ削除をまとめた設定ページ</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>ダークモード</strong> — CSS変数ベースのライト/ダーク切り替え</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>カスタムカテゴリ</strong> — ユーザーがカテゴリを自由に追加・編集・削除</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>一括削除</strong> — 完了済み企画の一括削除機能</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon fix">🔧</div>
+              <div class="change-label"><strong>Enterキー誤送信の修正</strong> — PC版でEnterキーを押したときに意図せず登録される問題を修正</div>
+              <span class="change-type-tag">修正</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- v0.5.0 (alpha) -->
+      <div class="release-item">
+        <div class="release-timeline">
+          <div class="release-dot minor"></div>
+          <div class="release-line"></div>
+        </div>
+        <div class="release-body">
+          <div class="release-header">
+            <span class="release-version">v0.5.0</span>
+            <span class="release-badge badge-feature">アルファ</span>
+            <span class="release-date">2025-05-25</span>
+          </div>
+          <div class="release-summary">
+            最初のプロトタイプ版。基本的な企画の登録・編集・削除・チェック機能を実装。
+          </div>
+          <div class="release-changes">
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>企画登録・編集・削除</strong> — 基本機能の実装</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>完了チェック</strong> — 企画に完了マークをつける機能</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>ローカルストレージ保存</strong> — ブラウザのlocalStorageにデータを永続化</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+            <div class="change-item">
+              <div class="change-icon new">✦</div>
+              <div class="change-label"><strong>PC・モバイル対応</strong> — レスポンシブデザインで両環境に対応</div>
+              <span class="change-type-tag">新機能</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -1839,31 +2131,6 @@ function checkForUpdate(){
   }).catch(()=>showToast('確認に失敗しました'));
 }
 
-
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('登録成功:', registration.scope);
-      })
-      .catch(error => {
-        console.log('登録失敗:', error);
-      });
-  });
-}
-
-
-window.addEventListener('load', function() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("/serviceWorker.js")
-      .then(function(registration) {
-        console.log("serviceWorker registed.");
-      }).catch(function(error) {
-        console.warn("serviceWorker error.", error);
-      });
-  }
-});
 </script>
 </body>
 </html>
